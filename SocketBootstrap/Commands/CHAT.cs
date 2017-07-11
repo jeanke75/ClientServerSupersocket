@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using SocketBootstrap.Models;
+using SocketServer.Models;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 
-namespace SocketBootstrap.Commands
+namespace SocketServer.Commands
 {
     public class CHAT : CommandBase<TelnetSession, StringRequestInfo>
     {

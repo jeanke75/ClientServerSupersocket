@@ -1,7 +1,7 @@
 ﻿using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
 
-namespace SocketBootstrap.Models
+namespace SocketServer.Models
 {
     public class TelnetServer : AppServer<TelnetSession>
     {

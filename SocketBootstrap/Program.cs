@@ -1,9 +1,9 @@
 ﻿using System;
-using SocketBootstrap.Models;
+using SocketServer.Models;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketEngine;
 
-namespace SocketBootstrap
+namespace SocketServer
 {
     class Program
     {
