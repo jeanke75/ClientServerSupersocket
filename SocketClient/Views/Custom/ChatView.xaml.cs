@@ -117,6 +117,7 @@ namespace SocketClient.Views.Custom
             }
 
             SendMessage(new Login() { username = txtUsername.Text });
+            txtUsername.Text = "";
         }
 
         private void btnSend_Click(object sender, RoutedEventArgs e)
@@ -134,21 +135,26 @@ namespace SocketClient.Views.Custom
                     if (splitMessage.Length >= 3)
                         SendMessage(new Chat() { Type = ChatTypes.Whisper, Message = string.Join(" ", splitMessage.Skip(2).ToArray()), Recipient = splitMessage[1] });
                     break;
-                /*case "/s":
+                case "/p":
+                case "/party":
+                    SendMessage(new Chat() { Type = ChatTypes.Party, Message = string.Join(" ", splitMessage.Skip(1).ToArray()) });
+                    break;
+                case "/g":
+                case "/guild":
+                    SendMessage(new Chat() { Type = ChatTypes.Guild, Message = string.Join(" ", splitMessage.Skip(1).ToArray()) });
+                    break;
+                case "/s":
                 case "/shout":
-                    SendMessage(new Chat() { Type = ChatTypes.Whisper, Message = msg });
-                    break;*/
+                    SendMessage(new Chat() { Type = ChatTypes.Server, Message = string.Join(" ", splitMessage.Skip(1).ToArray()) });
+                    break;
                 case "/bs":
                 case "/bigshout":
-                    SendMessage(new Chat() { Type = ChatTypes.All, Message = msg });
+                    SendMessage(new Chat() { Type = ChatTypes.All, Message = string.Join(" ", splitMessage.Skip(1).ToArray()) });
                     break;
                 default:
                     SendMessage(new Chat() { Type = ChatTypes.Normal, Message = msg });
                     break;
             }
-
-
-            //SendMessage("CHAT", txtInput.Text.Trim());
             txtInput.Text = "";
         }
 

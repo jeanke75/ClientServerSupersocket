@@ -25,12 +25,22 @@ namespace SocketServer.Commands.Custom
                 if (chat.Message == "")
                 {
                     session.Send("CHATERR Please provide a message.\r\n");
+                    return;
                 }
 
                 switch (chat.Type)
                 {
                     case ChatTypes.Whisper:
                         HandleWhisper(session, chat);
+                        break;
+                    case ChatTypes.Party:
+                        HandleParty(session, chat);
+                        break;
+                    case ChatTypes.Guild:
+                        HandleGuild(session, chat);
+                        break;
+                    case ChatTypes.Server:
+                        HandleServer(session, chat);
                         break;
                     case ChatTypes.All:
                         HandleAll(session, chat);
@@ -80,6 +90,21 @@ namespace SocketServer.Commands.Custom
             {
                 s.Send("CHAT " + session.userName + ": " + chat.Message + "\r\n");
             }
+        }
+
+        private void HandleParty(CustomSession session, Chat chat)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleGuild(CustomSession session, Chat chat)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleServer(CustomSession session, Chat chat)
+        {
+            throw new NotImplementedException();
         }
 
         private void HandleAll(CustomSession session, Chat chat)

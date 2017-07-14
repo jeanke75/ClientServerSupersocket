@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using ClassLibrary;
 using SuperSocket.SocketBase.Protocol;
@@ -64,8 +61,6 @@ namespace SocketServer.Servers.Custom
             Buffer.BlockCopy(_inputBuffer, protocolHeaderStartIndex + ProtocolHeaderKeyRepetitions, data, 0, length - ProtocolHeaderKeyRepetitions);
 
             Message msg = MessageHelper.DeserializeMessage(data);
-            object o = MessageHelper.Deserialize(msg);
-            Type x = o.GetType();
 
             rest = 0;
             _bufferLastOffset = 0;
