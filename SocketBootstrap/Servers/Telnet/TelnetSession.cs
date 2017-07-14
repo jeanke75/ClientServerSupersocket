@@ -2,7 +2,7 @@
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 
-namespace SocketServer.Models
+namespace SocketServer.Servers.Telnet
 {
     public class TelnetSession : AppSession<TelnetSession>
     {

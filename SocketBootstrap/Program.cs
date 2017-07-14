@@ -1,5 +1,6 @@
 ﻿using System;
-using SocketServer.Models;
+using SocketServer.Servers.Custom;
+using SocketServer.Servers.Telnet;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketEngine;
 
@@ -39,8 +40,14 @@ namespace SocketServer
                 if (s is TelnetServer)
                 {
                     TelnetServer x = s as TelnetServer;
-                    x.NewSessionConnected += new SessionHandler<TelnetSession>(appServer_NewSessionConnected);
-                    x.SessionClosed += new SessionHandler<TelnetSession, CloseReason>(appServer_SessionClosed);
+                    x.NewSessionConnected += new SessionHandler<TelnetSession>(telnetServer_NewSessionConnected);
+                    x.SessionClosed += new SessionHandler<TelnetSession, CloseReason>(telnetServer_SessionClosed);
+                }
+                else if(s is CustomServer)
+                {
+                    CustomServer x = s as CustomServer;
+                    x.NewSessionConnected += new SessionHandler<CustomSession>(customServer_NewSessionConnected);
+                    x.SessionClosed += new SessionHandler<CustomSession, CloseReason>(customServer_SessionClosed);
                 }
             }
             
@@ -61,12 +68,22 @@ namespace SocketServer
             Console.ReadKey();
         }
 
-        static void appServer_SessionClosed(TelnetSession session, CloseReason reason)
+        static void telnetServer_SessionClosed(TelnetSession session, CloseReason reason)
         {
             Console.WriteLine("{0}: Session {1} is closed.", session.AppServer.Name, session.SessionID);
         }
 
-        static void appServer_NewSessionConnected(TelnetSession session)
+        static void telnetServer_NewSessionConnected(TelnetSession session)
+        {
+            Console.WriteLine("{0}: Session {1} is opened.", session.AppServer.Name, session.SessionID);
+        }
+
+        static void customServer_SessionClosed(CustomSession session, CloseReason reason)
+        {
+            Console.WriteLine("{0}: Session {1} is closed.", session.AppServer.Name, session.SessionID);
+        }
+
+        static void customServer_NewSessionConnected(CustomSession session)
         {
             Console.WriteLine("{0}: Session {1} is opened.", session.AppServer.Name, session.SessionID);
         }

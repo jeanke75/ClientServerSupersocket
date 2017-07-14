@@ -10,7 +10,7 @@ namespace ClassLibrary
             using (var memoryStream = new MemoryStream())
             {
                 (new BinaryFormatter()).Serialize(memoryStream, anySerializableObject);
-                return new Message { Data = memoryStream.ToArray() };
+                return new Message { Key = anySerializableObject.GetType().Name, Data = memoryStream.ToArray() };
             }
         }
 
@@ -18,6 +18,21 @@ namespace ClassLibrary
         {
             using (var memoryStream = new MemoryStream(message.Data))
                 return (new BinaryFormatter()).Deserialize(memoryStream);
+        }
+
+        public static byte[] SerializeMessage(Message message)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                (new BinaryFormatter()).Serialize(memoryStream, message);
+                return memoryStream.ToArray();
+            }
+        }
+
+        public static Message DeserializeMessage(byte[] data)
+        {
+            using (var memoryStream = new MemoryStream(data))
+                return (Message)(new BinaryFormatter()).Deserialize(memoryStream);
         }
     }
 }

@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="SocketClient.Views.ServerList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SocketClient.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ListView x:Name="lvServers" ItemsSource="{Binding servers}" MinWidth="200" MinHeight="100">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel>
+                        <TextBlock Text="{Binding IP}" />
+                        <TextBlock Text=":" />
+                        <TextBlock Text="{Binding Port}" />
+                        <TextBlock Text=" (" />
+                        <TextBlock Text="{Binding Type}" />
+                        <TextBlock Text=")" />
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView >
+        <Button Content="Connect" HorizontalAlignment="Right" Width="65" Margin="0,3,0,0" Click="btnConnect_Click" />
+    </StackPanel>
+</UserControl>

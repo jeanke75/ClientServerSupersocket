@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using SocketServer.Models;
+using SocketServer.Servers.Telnet;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 
-namespace SocketServer.Commands
+namespace SocketServer.Commands.Telnet
 {
     public class LOGIN : CommandBase<TelnetSession, StringRequestInfo>
     {
