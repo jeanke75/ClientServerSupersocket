@@ -20,6 +20,7 @@ namespace SocketClient.Views
             servers = new ObservableCollection<Server>();
             servers.Add(new Server() { Type = Server.Types.Telnet, IP = "127.0.0.1", Port = 2012 });
             servers.Add(new Server() { Type = Server.Types.Custom, IP = "127.0.0.1", Port = 2013 });
+            servers.Add(new Server() { Type = Server.Types.Custom, IP = "127.0.0.1", Port = 2014 });
 
             InitializeComponent();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ClassLibrary;
 using ClassLibrary.Models;
@@ -30,6 +31,9 @@ namespace SocketServer.Commands.Custom
                 {
                     case ChatTypes.Whisper:
                         HandleWhisper(session, chat);
+                        break;
+                    case ChatTypes.All:
+                        HandleAll(session, chat);
                         break;
                     default:
                         HandleNormal(session, chat);
@@ -75,6 +79,18 @@ namespace SocketServer.Commands.Custom
             foreach (var s in session.AppServer.GetAllSessions())
             {
                 s.Send("CHAT " + session.userName + ": " + chat.Message + "\r\n");
+            }
+        }
+
+        private void HandleAll(CustomSession session, Chat chat)
+        {
+            List<CustomServer> servers = ((CustomServer)session.AppServer).GetAllServersOfSameType();
+            foreach(CustomServer server in servers)
+            {
+                foreach(CustomSession s in server.GetAllSessions())
+                {
+                    s.Send("CHAT [" + session.AppServer.Name + "] " + session.userName + ": " + chat.Message + "\r\n");
+                }
             }
         }
     }

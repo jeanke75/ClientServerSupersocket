@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -140,6 +138,10 @@ namespace SocketClient.Views.Custom
                 case "/shout":
                     SendMessage(new Chat() { Type = ChatTypes.Whisper, Message = msg });
                     break;*/
+                case "/bs":
+                case "/bigshout":
+                    SendMessage(new Chat() { Type = ChatTypes.All, Message = msg });
+                    break;
                 default:
                     SendMessage(new Chat() { Type = ChatTypes.Normal, Message = msg });
                     break;

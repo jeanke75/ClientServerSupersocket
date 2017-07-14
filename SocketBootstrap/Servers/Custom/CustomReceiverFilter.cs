@@ -61,13 +61,14 @@ namespace SocketServer.Servers.Custom
             }
 
             byte[] data = new byte[length - ProtocolHeaderKeyRepetitions];
-            Buffer.BlockCopy(_inputBuffer, _bufferLastOffset - length + protocolHeaderStartIndex + ProtocolHeaderKeyRepetitions, data, 0, length - ProtocolHeaderKeyRepetitions);
+            Buffer.BlockCopy(_inputBuffer, protocolHeaderStartIndex + ProtocolHeaderKeyRepetitions, data, 0, length - ProtocolHeaderKeyRepetitions);
 
             Message msg = MessageHelper.DeserializeMessage(data);
             object o = MessageHelper.Deserialize(msg);
             Type x = o.GetType();
 
             rest = 0;
+            _bufferLastOffset = 0;
 
             return new CustomDataRequest(msg.Key, msg);
         }
