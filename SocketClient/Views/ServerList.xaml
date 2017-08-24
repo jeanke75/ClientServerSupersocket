@@ -23,5 +23,9 @@
             </ListView.ItemTemplate>
         </ListView >
         <Button Content="Connect" HorizontalAlignment="Right" Width="65" Margin="0,3,0,0" Click="btnConnect_Click" />
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click">
+            <TextBlock TextWrapping="Wrap" Text="TextBlock"/>
+        </Button>
+        <TextBox x:Name="txtAantal" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
     </StackPanel>
 </UserControl>

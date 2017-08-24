@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ClassLibrary;
 using ClassLibrary.Models;
+using Client.Filters;
 using SuperSocket.ClientEngine;
 using SuperSocket.ProtoBase;
 
@@ -58,6 +59,29 @@ namespace SocketClient.Views.Custom
                 }
             });
         }
+
+        /*private void MessageReceived(BufferedPackageInfo spi)
+        {
+            Dispatcher.Invoke(delegate
+            {
+                switch (spi.Key)
+                {
+                    case "LOGIN":
+                        dckLogin.Visibility = Visibility.Collapsed;
+                        dckChat.Visibility = Visibility.Visible;
+                        UpdateText(spi.Body);
+                        break;
+                    case "LOGINERR":
+                    case "CHATERR":
+                    case "CHAT":
+                        UpdateText(spi.Body);
+                        break;
+                    default:
+                        UpdateText(string.Format("{0} {1}", spi.Key, spi.Body));
+                        break;
+                }
+            });
+        }*/
 
         private void SendMessage(object o)
         {

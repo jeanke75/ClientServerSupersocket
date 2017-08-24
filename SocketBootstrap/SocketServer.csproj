@@ -88,20 +88,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Custom\MOVE.cs" />
+    <Compile Include="Commands\Custom\REGISTER.cs" />
     <Compile Include="Commands\Custom\CHAT.cs" />
     <Compile Include="Commands\Custom\LOGIN.cs" />
-    <Compile Include="Commands\Telnet\LOGIN.cs" />
+    <Compile Include="Commands\PackageWriter.cs" />
+    <Compile Include="Config\ConfigHelper.cs" />
+    <Compile Include="Config\AccountConfig.cs" />
     <Compile Include="Servers\Custom\CustomDataRequest.cs" />
     <Compile Include="Servers\Custom\CustomReceiverFilter.cs" />
     <Compile Include="Servers\Custom\CustomServer.cs" />
     <Compile Include="Servers\Custom\CustomSession.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Servers\Telnet\TelnetServer.cs" />
-    <Compile Include="Servers\Telnet\TelnetSession.cs" />
-    <Compile Include="Commands\Telnet\CHAT.cs" />
-    <Compile Include="Commands\Telnet\ECHO.cs" />
-    <Compile Include="Commands\Telnet\PING.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -131,6 +130,7 @@
       <Name>ClassLibrary</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -2,5 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Socket Client" Height="350" Width="525">
-    <ContentControl x:Name="ccPage" />
+    <Grid>
+        <ContentControl x:Name="ccPage" />
+        <Button Height="20" Width="20" VerticalAlignment="Bottom" Click="Button_Click"/>
+    </Grid>
+    
 </Window>

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using ClassLibrary;
-using ClassLibrary.Models;
+using ClassLibrary.Packets.Client;
+using ClassLibrary.Packets.Enums;
+using ClassLibrary.Packets.Server;
 using SocketServer.Servers.Custom;
 using SuperSocket.SocketBase.Command;
 
@@ -10,111 +12,124 @@ namespace SocketServer.Commands.Custom
 {
     public class CHAT : CommandBase<CustomSession, CustomDataRequest>
     {
+        public override string Name
+        {
+            get
+            {
+                return "c" + base.Name;
+            }
+        }
+
         public override void ExecuteCommand(CustomSession session, CustomDataRequest requestInfo)
         {
-            if (session.userName == "")
-            {
-                session.Send("LOGINERR Not logged in!\r\n");
-                return;
-            }
+            // not logged in
+            if (session.player == null) return;
 
+            cChat chatc = MessageHelper.Deserialize(requestInfo.Message) as cChat;
+
+            // empty message
+            if (string.IsNullOrEmpty(chatc.Message)) return;
             try
             {
-                Chat chat = MessageHelper.Deserialize(requestInfo.Message) as Chat;
+                svChat chats = new svChat() { Type = chatc.Type, Message = chatc.Message, Sender = session.player.Username, Recipient = chatc.Recipient };
 
-                if (chat.Message == "")
-                {
-                    session.Send("CHATERR Please provide a message.\r\n");
-                    return;
-                }
-
-                switch (chat.Type)
+                switch (chatc.Type)
                 {
                     case ChatTypes.Whisper:
-                        HandleWhisper(session, chat);
+                        HandleWhisper(session, chats);
                         break;
                     case ChatTypes.Party:
-                        HandleParty(session, chat);
+                        HandleParty(session, chats);
                         break;
                     case ChatTypes.Guild:
-                        HandleGuild(session, chat);
+                        HandleGuild(session, chats);
                         break;
                     case ChatTypes.Server:
-                        HandleServer(session, chat);
+                        HandleServer(session, chats);
                         break;
                     case ChatTypes.All:
-                        HandleAll(session, chat);
+                        HandleAll(session, chats);
                         break;
                     default:
-                        HandleNormal(session, chat);
+                        HandleNormal(session, chats);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                session.Send("CHATERR " + ex.Message + " " + ex.GetType().ToString() + "\r\n");
+                HandleError(session, ex.Message + " " + ex.GetType().ToString());
             }
         }
 
-        private void HandleWhisper(CustomSession session, Chat chat)
+        private void HandleError(CustomSession session, string message)
+        {
+            svChat c = new svChat() { Message = message, Type = ChatTypes.Error };
+            PackageWriter.Write(session, c);
+        }
+
+        private void HandleWhisper(CustomSession session, svChat chat)
         {
             if (chat.Recipient != "")
             {
-                CustomSession sOther = session.AppServer.GetAllSessions().Where(x => x.userName == chat.Recipient).FirstOrDefault();
+                CustomSession sOther = session.AppServer.GetAllSessions().Where(x => x.player != null && x.player.Username == chat.Recipient).FirstOrDefault();
                 if (sOther != null)
                 {
-                    if (sOther.userName != session.userName)
+                    if (sOther.player.Username != session.player.Username)
                     {
-                        session.Send(string.Format("CHAT {0} -> {1}: {2}\r\n", session.userName, sOther.userName, chat.Message));
-                        sOther.Send(string.Format("CHAT {0} -> {1}: {2}\r\n", session.userName, sOther.userName, chat.Message));
+                        PackageWriter.Write(session, chat);
+                        PackageWriter.Write(sOther, chat);
                     }
                     else
                     {
-                        session.Send("CHATERR Can't whisper yourself!\r\n");
+                        HandleError(session, "Can't whisper yourself!");
                     }
                 }
                 else
                 {
-                    session.Send("CHATERR Didn't find the user " + chat.Recipient + ".\r\n");
+                    HandleError(session, "Didn't find the user " + chat.Recipient + ".");
                 }
             }
             else
             {
-                session.Send("CHATERR Please provide a username.\r\n");
+                HandleError(session, "Please provide a username.");
             }
         }
 
-        private void HandleNormal(CustomSession session, Chat chat)
+        private void HandleNormal(CustomSession session, svChat chat)
         {
-            foreach (var s in session.AppServer.GetAllSessions())
+            foreach (var s in session.AppServer.GetAllSessions().Where(x => x.player != null && x.player.MapName == session.player.MapName))
             {
-                s.Send("CHAT " + session.userName + ": " + chat.Message + "\r\n");
+                PackageWriter.Write(s, chat);
             }
         }
 
-        private void HandleParty(CustomSession session, Chat chat)
+        private void HandleParty(CustomSession session, svChat chat)
         {
             throw new NotImplementedException();
         }
 
-        private void HandleGuild(CustomSession session, Chat chat)
+        private void HandleGuild(CustomSession session, svChat chat)
         {
             throw new NotImplementedException();
         }
 
-        private void HandleServer(CustomSession session, Chat chat)
+        private void HandleServer(CustomSession session, svChat chat)
         {
-            throw new NotImplementedException();
+            foreach (var s in session.AppServer.GetAllSessions().Where(x => x.player != null))
+            {
+                PackageWriter.Write(s, chat);
+            }
         }
 
-        private void HandleAll(CustomSession session, Chat chat)
+        private void HandleAll(CustomSession session, svChat chat)
         {
+            chat.Server = session.AppServer.Name;
             List<CustomServer> servers = ((CustomServer)session.AppServer).GetAllServersOfSameType();
             foreach(CustomServer server in servers)
             {
                 foreach(CustomSession s in server.GetAllSessions())
                 {
-                    s.Send("CHAT [" + session.AppServer.Name + "] " + session.userName + ": " + chat.Message + "\r\n");
+                    PackageWriter.Write(s, chat);
                 }
             }
         }

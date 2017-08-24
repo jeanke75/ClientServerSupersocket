@@ -1,6 +1,4 @@
 ﻿using System;
-using SocketServer.Servers.Custom;
-using SocketServer.Servers.Telnet;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketEngine;
 
@@ -13,45 +11,50 @@ namespace SocketServer
             Console.WriteLine("Press any key to start the server!");
 
             Console.ReadKey();
-            Console.WriteLine();
 
             var bootstrap = BootstrapFactory.CreateBootstrap();
 
             if (!bootstrap.Initialize())
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Failed to initialize!");
+                Console.ResetColor();
                 Console.ReadKey();
                 return;
             }
 
             var result = bootstrap.Start();
 
-            Console.WriteLine("Start result: {0}!", result);
+            Console.Write("Start result: ");
+            switch(result)
+            {
+                case StartResult.Success:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                case StartResult.PartialSuccess:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+                case StartResult.Failed:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+            }
+            Console.WriteLine("{0}!", result);
+            Console.ResetColor();
 
             if (result == StartResult.Failed)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Failed to start!");
+                Console.ResetColor();
                 Console.ReadKey();
                 return;
             }
 
-            foreach(var s in bootstrap.AppServers)
-            {
-                if (s is TelnetServer)
-                {
-                    TelnetServer x = s as TelnetServer;
-                    x.NewSessionConnected += new SessionHandler<TelnetSession>(telnetServer_NewSessionConnected);
-                    x.SessionClosed += new SessionHandler<TelnetSession, CloseReason>(telnetServer_SessionClosed);
-                }
-                else if(s is CustomServer)
-                {
-                    CustomServer x = s as CustomServer;
-                    x.NewSessionConnected += new SessionHandler<CustomSession>(customServer_NewSessionConnected);
-                    x.SessionClosed += new SessionHandler<CustomSession, CloseReason>(customServer_SessionClosed);
-                }
-            }
-            
-            Console.WriteLine("Press key 'q' to stop it!");
+            Console.WriteLine();
+            Console.WriteLine("-----------------------------");
+            Console.WriteLine("- Press key 'q' to stop it! -");
+            Console.WriteLine("-----------------------------");
+            Console.WriteLine();
 
             while (Console.ReadKey().KeyChar != 'q')
             {
@@ -66,26 +69,6 @@ namespace SocketServer
 
             Console.WriteLine("The server was stopped!");
             Console.ReadKey();
-        }
-
-        static void telnetServer_SessionClosed(TelnetSession session, CloseReason reason)
-        {
-            Console.WriteLine("{0}: Session {1} is closed.", session.AppServer.Name, session.SessionID);
-        }
-
-        static void telnetServer_NewSessionConnected(TelnetSession session)
-        {
-            Console.WriteLine("{0}: Session {1} is opened.", session.AppServer.Name, session.SessionID);
-        }
-
-        static void customServer_SessionClosed(CustomSession session, CloseReason reason)
-        {
-            Console.WriteLine("{0}: Session {1} is closed.", session.AppServer.Name, session.SessionID);
-        }
-
-        static void customServer_NewSessionConnected(CustomSession session)
-        {
-            Console.WriteLine("{0}: Session {1} is opened.", session.AppServer.Name, session.SessionID);
         }
     }
 }

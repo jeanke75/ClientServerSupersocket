@@ -2,9 +2,9 @@
 using System.Text;
 using SuperSocket.ProtoBase;
 
-namespace SocketClient
+namespace Client.Filters
 {
-    public class TelnetReceiveFilter : TerminatorReceiveFilter<StringPackageInfo>
+    internal class TelnetReceiveFilter : TerminatorReceiveFilter<StringPackageInfo>
     {
         public TelnetReceiveFilter(byte[] terminator) : base(terminator) { }
 

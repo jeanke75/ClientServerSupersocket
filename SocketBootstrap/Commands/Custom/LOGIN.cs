@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using ClassLibrary;
+using ClassLibrary.Extensions;
 using ClassLibrary.Models;
+using ClassLibrary.Packets.Client;
+using ClassLibrary.Packets.Server;
 using SocketServer.Servers.Custom;
 using SuperSocket.SocketBase.Command;
 
@@ -9,29 +12,67 @@ namespace SocketServer.Commands.Custom
 {
     public class LOGIN : CommandBase<CustomSession, CustomDataRequest>
     {
+        public override string Name
+        {
+            get
+            {
+                return "c" + base.Name;
+            }
+        }
+
         public override void ExecuteCommand(CustomSession session, CustomDataRequest requestInfo)
         {
-            if (session.userName != "")
-            {
-                session.Send("LOGINERR Already logged in!\r\n");
-                return;
-            }
-
+            svLogin logins = new svLogin();
             try
             {
-                Login l = MessageHelper.Deserialize(requestInfo.Message) as Login;
-                if (session.AppServer.GetAllSessions().Any(x => x.userName == l.username))
+                cLogin loginc = MessageHelper.Deserialize(requestInfo.Message) as cLogin;
+
+                // user and pw filled in?
+                if (string.IsNullOrEmpty(loginc.Username?.Trim()) || string.IsNullOrEmpty(loginc.Password?.Trim()))
                 {
-                    session.Send("LOGINERR That username is already in use!\r\n");
+                    PackageWriter.Write(session, new svLogin() { Success = false, ErrorMessage = "Please fill in a username and password." });
                     return;
                 }
 
-                session.userName = l.username;
-                session.Send("LOGIN Sucessfully logged in\r\n");
+                // try to retrieve account based on credentials
+                Player p = CustomServer.Accounts.Where(x => x.Username == loginc.Username && x.Password == loginc.Password).FirstOrDefault();
+
+                // account found?
+                if (p == null)
+                {
+                    PackageWriter.Write(session, new svLogin() { Success = false, ErrorMessage = "Username/password mismatch or the account doesn't exist." });
+                    return;
+                }
+                
+                // account logged in yet?
+                if (((CustomServer)session.AppServer).GetAllServersOfSameType().Where(serv => serv.GetAllSessions().FirstOrDefault(x => x.player != null && x.player.Username == loginc.Username) != null).FirstOrDefault() != null)
+                {
+                    PackageWriter.Write(session, new svLogin() { Success = false, ErrorMessage = "The account is already logged in." });
+                    return;
+                }
+
+                session.player = p;
+                logins.Success = true;
+                logins.Username = p.Username;
+                logins.X = p.X;
+                logins.Y = p.Y;
+                logins.MapName = p.MapName;
+                logins.Players = (from s in session.AppServer.GetAllSessions()
+                                  where s.player != null && s.player.MapName == p.MapName && s.SessionID != session.SessionID
+                                  select s.player).ToHashSet();
+                PackageWriter.Write(session, logins);
+
+                // send data to all connected clients on the players map
+                foreach (CustomSession otherSession in session.AppServer.GetAllSessions().Where(x => x.player != null && x.SessionID != session.SessionID && x.player.MapName == p.MapName))
+                {
+                    PackageWriter.Write(otherSession, new svMove() { Success = true, Username = p.Username, X = p.X, Y = p.Y });
+                }
             }
             catch (Exception ex)
             {
-                session.Send("LOGINERR " + ex.Message + " " + ex.GetType().ToString() + "\r\n");
+                logins.Success = false;
+                logins.ErrorMessage = ex.Message + " " + ex.GetType().ToString();
+                PackageWriter.Write(session, logins);
             }
         }
     }

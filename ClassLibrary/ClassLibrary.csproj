@@ -40,10 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Maps\BaseMap.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageHelper.cs" />
-    <Compile Include="Models\Chat.cs" />
-    <Compile Include="Models\Login.cs" />
+    <Compile Include="Models\Player.cs" />
+    <Compile Include="Packets\Server\svChat.cs" />
+    <Compile Include="Packets\Client\cChat.cs" />
+    <Compile Include="Packets\Client\cLogin.cs" />
+    <Compile Include="Packets\Client\cMove.cs" />
+    <Compile Include="Packets\Client\cRegister.cs" />
+    <Compile Include="Packets\Enums\ChatTypes.cs" />
+    <Compile Include="Packets\Server\svLogin.cs" />
+    <Compile Include="Packets\Server\svLogout.cs" />
+    <Compile Include="Packets\Server\svMove.cs" />
+    <Compile Include="Packets\Server\svRegister.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

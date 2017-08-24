@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="ClientTest.Views.PickServer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ClientTest.Views">
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="IP: "/>
+            <TextBox x:Name="txtIP" Text="127.0.0.1" VerticalAlignment="Center" Width="100" MaxLength="15"/>
+            <Label Content="Port: "/>
+            <TextBox x:Name="txtPort" Text="2013" VerticalAlignment="Center" Width="50" MaxLength="5"/>
+            <Button x:Name="btnConnect" Content="Connect" VerticalAlignment="Center" Width="100" Margin="10,0,0,0" Click="btnConnect_Click"/>
+        </StackPanel>
+        <Label x:Name="lblError" Foreground="Red" Visibility="Hidden"/>
+    </StackPanel>
+</UserControl>

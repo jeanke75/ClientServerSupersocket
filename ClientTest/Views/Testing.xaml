@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="ClientTest.Views.Testing"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ClientTest.Views"
+             mc:Ignorable="d" 
+             d:DesignWidth="1000">
+    <UserControl.Resources>
+        <local:ChatTemplateSelector x:Key="MyChatTemplateSelector"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel MinWidth="250">
+            <DockPanel x:Name="dckChat" DockPanel.Dock="Bottom" Margin="2">
+                <Button x:Name="btnChat" Content="Send" DockPanel.Dock="Right" Width="100" Click="btnChat_Click" Height="20" IsDefault="True"/>
+                <TextBox x:Name="txtChatInput" Height="20" MaxLength="100" TextWrapping="Wrap"/>
+            </DockPanel>
+            <ListBox Name="lbChat" Background="AliceBlue" ItemTemplateSelector="{StaticResource MyChatTemplateSelector}" >
+                <ListBox.Resources>
+                    <DataTemplate x:Key="ChatError">
+                        <TextBlock Text="{Binding Path=Message}" Foreground="Red" Width="225" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ChatWhisper">
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Path=Sender}" FontWeight="Bold" Foreground="DarkGray"/>
+                            <TextBlock Text=" -> " Foreground="DarkGray"/>
+                            <TextBlock Text="{Binding Path=Recipient}" FontWeight="Bold" Foreground="DarkGray"/>
+                            <TextBlock Text=": " Foreground="DarkGray"/>
+                            <TextBlock Text="{Binding Path=Message}" Width="225" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ChatNormal">
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Path=Sender}" FontWeight="Bold"/>
+                            <TextBlock Text=": " FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Path=Message}" Width="225" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ChatParty">
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Path=Sender}" FontWeight="Bold" Foreground="YellowGreen"/>
+                            <TextBlock Text=": " FontWeight="Bold" Foreground="YellowGreen"/>
+                            <TextBlock Text="{Binding Path=Message}" Width="225" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ChatGuild">
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Path=Sender}" FontWeight="Bold" Foreground="Purple"/>
+                            <TextBlock Text=": " FontWeight="Bold" Foreground="Purple"/>
+                            <TextBlock Text="{Binding Path=Message}" Width="225" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ChatServer">
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Path=Sender}" FontWeight="Bold" Foreground="Goldenrod"/>
+                            <TextBlock Text=": " FontWeight="Bold" Foreground="Goldenrod"/>
+                            <TextBlock Text="{Binding Path=Message}" Width="225" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ChatAll">
+                        <WrapPanel>
+                            <TextBlock Text="[" FontWeight="Bold" Foreground="Orange"/>
+                            <TextBlock Text="{Binding Path=Server}" FontWeight="Bold" Foreground="Orange"/>
+                            <TextBlock Text="]" FontWeight="Bold" Foreground="Orange"/>
+                            <TextBlock Text="{Binding Path=Sender}" FontWeight="Bold" Foreground="Orange"/>
+                            <TextBlock Text=": " FontWeight="Bold" Foreground="Orange"/>
+                            <TextBlock Text="{Binding Path=Message}" Width="225" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.Resources>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel VerticalAlignment="Bottom"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+        </DockPanel>
+        <ScrollViewer MinWidth="250" VerticalScrollBarVisibility="Visible" Grid.Column="1">
+            <TextBlock x:Name="txtConsole" TextWrapping="Wrap" Background="Black" Foreground="White"/>
+        </ScrollViewer>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+            <StackPanel >
+                <Button x:Name="btnMoveUp" Content="Move Up"  Height="20" Width="75" Click="btnMoveUp_Click"/>
+                <Button x:Name="btnMoveDown" Content="Move Down"  Height="20" Width="75" Click="btnMoveDown_Click"/>
+                <Button x:Name="btnMoveLeft" Content="Move Left"  Height="20" Width="75" Click="btnMoveLeft_Click"/>
+                <Button x:Name="btnMoveRight" Content="Move Right"  Height="20" Width="75" Click="btnMoveRight_Click"/>
+            </StackPanel>
+            <Canvas x:Name="cMap" Width="100" Background="Black" />
+        </StackPanel>
+        
+        
+    </Grid>
+</UserControl>

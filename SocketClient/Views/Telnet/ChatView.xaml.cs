@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using SocketClient.Filters;
 using SuperSocket.ClientEngine;
 using SuperSocket.ProtoBase;
 

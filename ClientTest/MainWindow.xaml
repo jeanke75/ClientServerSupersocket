@@ -1,0 +1,7 @@
+﻿<Window x:Class="ClientTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ClientTest"
+        Title="MainWindow" Height="600" Width="1000" Closing="Window_Closing">
+    <ContentControl x:Name="ccView"/>
+</Window>

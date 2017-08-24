@@ -64,7 +64,6 @@ namespace SocketServer.Servers.Custom
 
             rest = 0;
             _bufferLastOffset = 0;
-
             return new CustomDataRequest(msg.Key, msg);
         }
 
