@@ -22,6 +22,7 @@ namespace SocketServer.Commands.Custom
 
         public override void ExecuteCommand(CustomSession session, CustomDataRequest requestInfo)
         {
+            (session.AppServer as CustomServer).simulation.packetsIn.Enqueue(requestInfo.Message);
             svRegister regs = new svRegister();
             try
             {

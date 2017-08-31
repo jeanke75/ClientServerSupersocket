@@ -70,6 +70,7 @@ namespace ClientTest.Views
                 main.client.RegisterMessageReceived -= HandleRegister;
                 main.client.LoginMessageReceived -= HandleLogin;
                 Application.Current.Dispatcher.Invoke(delegate {
+                    main.Title = string.Format("{0} - {1}", main.client.Endpoint.ToString(), login.Username);
                     main.SetContent(new Testing(main, login));
                 });
             }

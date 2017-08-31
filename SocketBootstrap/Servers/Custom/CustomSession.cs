@@ -34,6 +34,9 @@ namespace SocketServer.Servers.Custom
 
             Console.WriteLine("{0}: Session closed {1} ({2})", AppServer.Name, SessionID, reason);
 
+            Simulation sim = (AppServer as CustomServer).simulation;
+            if (sim._IsRunning && AppServer.GetAllSessions().Count(x => x.SessionID != SessionID) == 0) sim.Stop();
+
             base.OnSessionClosed(reason);
         }
     }

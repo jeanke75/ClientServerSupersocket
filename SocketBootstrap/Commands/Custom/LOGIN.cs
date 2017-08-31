@@ -60,13 +60,22 @@ namespace SocketServer.Commands.Custom
                 logins.Players = (from s in session.AppServer.GetAllSessions()
                                   where s.player != null && s.player.MapName == p.MapName && s.SessionID != session.SessionID
                                   select s.player).ToHashSet();
+
+                // start simulation loop if it's not already running
+                Simulation sim = (session.AppServer as CustomServer).simulation;
+                if (!sim._IsRunning) sim.Start();
+
+                // send succesfull login packet back to the client
                 PackageWriter.Write(session, logins);
 
+                session.AppServer.GetAllSessions().Where(x => x.player != null && x.SessionID != session.SessionID && x.player.MapName == p.MapName)
+                                 .AsParallel().ForAll(x => { PackageWriter.Write(x, new svMove() { Success = true, Username = p.Username, X = p.X, Y = p.Y }); });
+
                 // send data to all connected clients on the players map
-                foreach (CustomSession otherSession in session.AppServer.GetAllSessions().Where(x => x.player != null && x.SessionID != session.SessionID && x.player.MapName == p.MapName))
+                /*foreach (CustomSession otherSession in session.AppServer.GetAllSessions().Where(x => x.player != null && x.SessionID != session.SessionID && x.player.MapName == p.MapName))
                 {
                     PackageWriter.Write(otherSession, new svMove() { Success = true, Username = p.Username, X = p.X, Y = p.Y });
-                }
+                }*/
             }
             catch (Exception ex)
             {

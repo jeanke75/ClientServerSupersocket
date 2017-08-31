@@ -45,6 +45,8 @@
     <Compile Include="Message.cs" />
     <Compile Include="MessageHelper.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Packets\Client\cSync.cs" />
+    <Compile Include="Packets\Server\svSync.cs" />
     <Compile Include="Packets\Server\svChat.cs" />
     <Compile Include="Packets\Client\cChat.cs" />
     <Compile Include="Packets\Client\cLogin.cs" />

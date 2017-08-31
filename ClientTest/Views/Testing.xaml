@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ClientTest.Views"
+             xmlns:templateSelectors="clr-namespace:ClientTest.TemplateSelectors"
              mc:Ignorable="d" 
              d:DesignWidth="1000">
     <UserControl.Resources>
-        <local:ChatTemplateSelector x:Key="MyChatTemplateSelector"/>
+        <templateSelectors:ChatTemplateSelector x:Key="MyChatTemplateSelector"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -95,7 +96,5 @@
             </StackPanel>
             <Canvas x:Name="cMap" Width="100" Background="Black" />
         </StackPanel>
-        
-        
     </Grid>
 </UserControl>

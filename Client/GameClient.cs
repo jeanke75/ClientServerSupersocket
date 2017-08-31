@@ -32,6 +32,9 @@ namespace Client
         public delegate void ChatMessageDelegate(svChat chat);
         public ChatMessageDelegate ChatMessageReceived;
 
+        public delegate void SyncMessageDelegate(svSync sync);
+        public SyncMessageDelegate SyncMessageReceived;
+
         public delegate void MovementMessageDelegate(svMove move);
         public MovementMessageDelegate MovementMessageReceived;
 
@@ -77,6 +80,7 @@ namespace Client
         {
             if (obj.Data is svMove) MovementMessageReceived(obj.Data as svMove);
             if (obj.Data is svChat) ChatMessageReceived(obj.Data as svChat);
+            if (obj.Data is svSync) SyncMessageReceived(obj.Data as svSync);
             if (obj.Data is svLogin) LoginMessageReceived(obj.Data as svLogin);
             if (obj.Data is svLogout) LogoutMessageReceived(obj.Data as svLogout);
             if (obj.Data is svRegister) RegisterMessageReceived(obj.Data as svRegister);
@@ -95,5 +99,6 @@ namespace Client
         }
 
         public bool IsConnected { get { return client.IsConnected; } }
+        public IPEndPoint Endpoint { get { return endpoint; } }
     }
 }

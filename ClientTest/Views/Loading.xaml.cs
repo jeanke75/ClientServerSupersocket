@@ -20,6 +20,7 @@ namespace ClientTest.Views
         private void SocketConnected(object sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke(delegate {
+                main.Title = main.client.Endpoint.ToString();
                 main.SetContent(new LoginView(main));
             });
         }
