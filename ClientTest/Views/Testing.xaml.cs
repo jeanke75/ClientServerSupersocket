@@ -28,6 +28,9 @@ namespace ClientTest.Views
         ObservableQueue<svChat> chatQueue = new ObservableQueue<svChat>();
         public ObservableQueue<svChat> ChatQueue { get { return chatQueue; } }
 
+        ObservableQueue<string> consoleQueue = new ObservableQueue<string>();
+        public ObservableQueue<string> ConsoleQueue { get { return consoleQueue; } }
+
         Player hero = new Player();
         HashSet<Player> otherPlayers = new HashSet<Player>();
 
@@ -35,6 +38,8 @@ namespace ClientTest.Views
         {
             InitializeComponent();
             this.main = main;
+
+            lbConsole.ItemsSource = ConsoleQueue;
 
             LoadMaps();
 
@@ -181,7 +186,7 @@ namespace ClientTest.Views
 
         private void HandleMovement(svMove move)
         {
-            txtConsole.Dispatcher.Invoke(delegate
+            lbConsole.Dispatcher.Invoke(delegate
             {
                 if (move.Success) // packet from other
                 {
@@ -216,7 +221,7 @@ namespace ClientTest.Views
 
         private void HandleLogout(svLogout logout)
         {
-            txtConsole.Dispatcher.Invoke(delegate
+            lbConsole.Dispatcher.Invoke(delegate
             {
                 WriteToConsole(logout.Username + " disconnected");
                 otherPlayers.RemoveWhere(x => x.Username == logout.Username);
@@ -225,7 +230,9 @@ namespace ClientTest.Views
 
         private void WriteToConsole(string msg)
         {
-            txtConsole.Text += msg + Environment.NewLine;
+            //txtConsole.Text += msg + Environment.NewLine;
+            if (ConsoleQueue.Count() > 5) ConsoleQueue.Dequeue();
+            ConsoleQueue.Enqueue(msg);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using Client;
 
 namespace ClientTest.Views
 {
@@ -22,7 +23,7 @@ namespace ClientTest.Views
             lblError.Visibility = Visibility.Hidden;
             try
             {
-                main.client = new Client.GameClient(new IPEndPoint(IPAddress.Parse(txtIP.Text), int.Parse(txtPort.Text)));
+                main.client = new GameClient(new IPEndPoint(IPAddress.Parse(txtIP.Text), int.Parse(txtPort.Text)));
                 main.SetContent(new Loading(main));
             }
             catch(Exception ex)

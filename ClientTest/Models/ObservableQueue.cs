@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
@@ -12,19 +13,18 @@ namespace ClientTest.Models
         public void Enqueue(T item)
         {
             queue.Enqueue(item);
-            if (CollectionChanged != null)
-                CollectionChanged(this,
-                    new NotifyCollectionChangedEventArgs(
-                        NotifyCollectionChangedAction.Add, item));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+        }
+
+        private void OnCollectionChanged(object e)
+        {
+            throw new NotImplementedException();
         }
 
         public T Dequeue()
         {
             var item = queue.Dequeue();
-            if (CollectionChanged != null)
-                CollectionChanged(this,
-                    new NotifyCollectionChangedEventArgs(
-                        NotifyCollectionChangedAction.Remove, item));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, 0));
             return item;
         }
 
