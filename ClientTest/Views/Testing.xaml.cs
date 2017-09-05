@@ -230,8 +230,7 @@ namespace ClientTest.Views
 
         private void WriteToConsole(string msg)
         {
-            //txtConsole.Text += msg + Environment.NewLine;
-            if (ConsoleQueue.Count() > 5) ConsoleQueue.Dequeue();
+            if (ConsoleQueue.Count() > 50) ConsoleQueue.Dequeue();
             ConsoleQueue.Enqueue(msg);
         }
     }
