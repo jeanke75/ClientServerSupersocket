@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using ClassLibrary.Packets.Client;
-using ClassLibrary.Packets.Server;
+using Shared.Packets.Client;
+using Shared.Packets.Server;
 
 namespace ClientTest.Views
 {

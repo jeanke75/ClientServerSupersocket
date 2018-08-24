@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassLibrary
+namespace Shared
 {
     [Serializable]
     public class Message

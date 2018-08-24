@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ClassLibrary.Extensions
+namespace Shared.Extensions
 {
     public static class Extensions
     {

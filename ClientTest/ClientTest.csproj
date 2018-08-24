@@ -126,13 +126,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj">
-      <Project>{25F6A325-5890-4CCF-B917-61365FA35986}</Project>
-      <Name>ClassLibrary</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Client\Client.csproj">
       <Project>{FC530DCA-14A0-44E9-A35A-56C8313BD8CC}</Project>
       <Name>Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{497dca02-873c-481b-b921-f599de1ad384}</Project>
+      <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

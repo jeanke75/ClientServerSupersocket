@@ -1,7 +1,7 @@
-﻿using System.Windows;
+﻿using Shared.Packets.Enums;
+using Shared.Packets.Server;
+using System.Windows;
 using System.Windows.Controls;
-using ClassLibrary.Packets.Enums;
-using ClassLibrary.Packets.Server;
 
 namespace ClientTest.TemplateSelectors
 {

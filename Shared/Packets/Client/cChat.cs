@@ -1,7 +1,7 @@
-﻿using System;
-using ClassLibrary.Packets.Enums;
+﻿using Shared.Packets.Enums;
+using System;
 
-namespace ClassLibrary.Packets.Client
+namespace Shared.Packets.Client
 {
     [Serializable]
     public class cChat

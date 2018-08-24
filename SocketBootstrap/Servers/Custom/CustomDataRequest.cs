@@ -1,4 +1,4 @@
-﻿using ClassLibrary;
+﻿using Shared;
 using SuperSocket.SocketBase.Protocol;
 
 namespace SocketServer.Servers.Custom

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using ClassLibrary.Models;
+using Shared.Models;
 
-namespace ClassLibrary.Packets.Server
+namespace Shared.Packets.Server
 {
     [Serializable]
-    public class svLogin
+    public class svLogin : BaseServerPacket
     {
         public bool Success { get; set; }
         public string ErrorMessage { get; set; }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassLibrary.Models
+namespace Shared.Models
 {
     [Serializable]
     public class Player

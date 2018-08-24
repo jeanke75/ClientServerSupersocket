@@ -1,7 +1,7 @@
 ﻿using System;
-using ClassLibrary;
-using ClassLibrary.Packets.Client;
-using ClassLibrary.Packets.Server;
+using Shared;
+using Shared.Packets.Client;
+using Shared.Packets.Server;
 using SocketServer.Servers.Custom;
 using SuperSocket.SocketBase.Command;
 

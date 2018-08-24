@@ -2,9 +2,9 @@
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using ClassLibrary;
-using ClassLibrary.Packets.Server;
 using Client.Filters;
+using Shared;
+using Shared.Packets.Server;
 using SuperSocket.ClientEngine;
 
 namespace Client
@@ -37,6 +37,10 @@ namespace Client
 
         public delegate void MovementMessageDelegate(svMove move);
         public MovementMessageDelegate MovementMessageReceived;
+
+        public static long bytesReceived = 0;
+        public static long bytesSent = 0;
+        public static DateTime startTime = DateTime.Now;
 
         public GameClient(IPEndPoint endpoint)
         {
@@ -78,12 +82,33 @@ namespace Client
 
         private void MessageReceived(CustomPackageInfo obj)
         {
-            if (obj.Data is svMove) MovementMessageReceived(obj.Data as svMove);
-            if (obj.Data is svChat) ChatMessageReceived(obj.Data as svChat);
-            if (obj.Data is svSync) SyncMessageReceived(obj.Data as svSync);
-            if (obj.Data is svLogin) LoginMessageReceived(obj.Data as svLogin);
-            if (obj.Data is svLogout) LogoutMessageReceived(obj.Data as svLogout);
-            if (obj.Data is svRegister) RegisterMessageReceived(obj.Data as svRegister);
+            /*if (obj.Data is svMove) MovementMessageReceived(obj.Data as svMove);
+            else if (obj.Data is svChat) ChatMessageReceived(obj.Data as svChat);
+            else if (obj.Data is svSync) SyncMessageReceived(obj.Data as svSync);
+            else if (obj.Data is svLogin) LoginMessageReceived(obj.Data as svLogin);
+            else if (obj.Data is svLogout) LogoutMessageReceived(obj.Data as svLogout);
+            else if (obj.Data is svRegister) RegisterMessageReceived(obj.Data as svRegister);*/
+            if (obj.Data is svMulti)
+            {
+                foreach (BaseServerPacket p in ((svMulti)obj.Data).packets)
+                {
+                    HandleMessage(p);
+                }
+            }
+            else
+            {
+                HandleMessage(obj.Data as BaseServerPacket);
+            }
+        }
+
+        private void HandleMessage(BaseServerPacket command)
+        {
+            if (command is svMove) MovementMessageReceived(command as svMove);
+            else if (command is svChat) ChatMessageReceived(command as svChat);
+            else if (command is svSync) SyncMessageReceived(command as svSync);
+            else if (command is svLogin) LoginMessageReceived(command as svLogin);
+            else if (command is svLogout) LogoutMessageReceived(command as svLogout);
+            else if (command is svRegister) RegisterMessageReceived(command as svRegister);
         }
 
         public void SendMessage(object o)
@@ -96,6 +121,7 @@ namespace Client
             Buffer.BlockCopy(serializedMessage, 0, rv, header.Length, serializedMessage.Length);
 
             client.Send(rv);
+            bytesSent += rv.Length;
         }
 
         public bool IsConnected { get { return client.IsConnected; } }

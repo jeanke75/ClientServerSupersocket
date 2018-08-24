@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using ClassLibrary.Models;
-using ClassLibrary.Packets.Server;
+using Shared.Models;
+using Shared.Packets.Server;
 using SocketServer.Commands;
 using SuperSocket.SocketBase;
 

@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary.Packets.Enums
+﻿namespace Shared.Packets.Enums
 {
     public enum ChatTypes
     {

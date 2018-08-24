@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ClassLibrary.Maps;
-using ClassLibrary.Models;
+using Shared.Maps;
+using Shared.Models;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 

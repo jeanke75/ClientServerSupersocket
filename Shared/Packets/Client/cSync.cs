@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassLibrary.Packets.Client
+namespace Shared.Packets.Client
 {
     [Serializable]
     public class cSync

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClassLibrary;
-using ClassLibrary.Packets.Client;
-using ClassLibrary.Packets.Enums;
-using ClassLibrary.Packets.Server;
+using Shared;
+using Shared.Packets.Client;
+using Shared.Packets.Enums;
+using Shared.Packets.Server;
 using SocketServer.Servers.Custom;
 using SuperSocket.SocketBase.Command;
 
@@ -32,6 +32,24 @@ namespace SocketServer.Commands.Custom
             try
             {
                 svChat chats = new svChat() { Type = chatc.Type, Message = chatc.Message, Sender = session.player.Username, Recipient = chatc.Recipient };
+
+                if (chats.Message == "multi")
+                {
+                    svMulti multi = new svMulti();
+                    multi.packets.Add(new svChat() { Type = ChatTypes.All, Message = "MULTI-packet 1", Server = "ANNOUNCEMENT" });
+                    multi.packets.Add(new svChat() { Type = ChatTypes.All, Message = "MULTI-packet 2", Server = "ANNOUNCEMENT" });
+                    multi.packets.Add(new svChat() { Type = ChatTypes.All, Message = "MULTI-packet 3", Server = "ANNOUNCEMENT" });
+
+                    List<CustomServer> servers = ((CustomServer)session.AppServer).GetAllServersOfSameType();
+                    foreach (CustomServer server in servers)
+                    {
+                        foreach (CustomSession s in server.GetAllSessions())
+                        {
+                            PackageWriter.Write(s, multi);
+                        }
+                    }
+                }
+
 
                 switch (chatc.Type)
                 {

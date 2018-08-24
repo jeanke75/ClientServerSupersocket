@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{25F6A325-5890-4CCF-B917-61365FA35986}</ProjectGuid>
+    <ProjectGuid>{497DCA02-873C-481B-B921-F599DE1AD384}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary</RootNamespace>
-    <AssemblyName>ClassLibrary</AssemblyName>
+    <RootNamespace>Shared</RootNamespace>
+    <AssemblyName>Shared</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,27 +46,24 @@
     <Compile Include="Message.cs" />
     <Compile Include="MessageHelper.cs" />
     <Compile Include="Models\Player.cs" />
-    <Compile Include="Packets\Client\cSync.cs" />
-    <Compile Include="Packets\Server\svSync.cs" />
-    <Compile Include="Packets\Server\svChat.cs" />
+    <Compile Include="Packets\BasePacket.cs" />
     <Compile Include="Packets\Client\cChat.cs" />
     <Compile Include="Packets\Client\cLogin.cs" />
     <Compile Include="Packets\Client\cMove.cs" />
     <Compile Include="Packets\Client\cRegister.cs" />
+    <Compile Include="Packets\Client\cSync.cs" />
     <Compile Include="Packets\Enums\ChatTypes.cs" />
+    <Compile Include="Packets\Enums\PacketTypes.cs" />
+    <Compile Include="Packets\PacketSerializer.cs" />
+    <Compile Include="Packets\Server\BaseServerPacket.cs" />
+    <Compile Include="Packets\Server\svChat.cs" />
     <Compile Include="Packets\Server\svLogin.cs" />
     <Compile Include="Packets\Server\svLogout.cs" />
     <Compile Include="Packets\Server\svMove.cs" />
+    <Compile Include="Packets\Server\svMulti.cs" />
     <Compile Include="Packets\Server\svRegister.cs" />
+    <Compile Include="Packets\Server\svSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

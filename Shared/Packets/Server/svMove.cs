@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace ClassLibrary.Packets.Server
+namespace Shared.Packets.Server
 {
     [Serializable]
-    public class svMove
+    public class svMove : BaseServerPacket
     {
         public bool Success { get; set; }
         public string ErrorMessage { get; set; }

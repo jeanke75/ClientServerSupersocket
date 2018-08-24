@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace ClassLibrary.Packets.Server
+namespace Shared.Packets.Server
 {
     [Serializable]
-    public class svLogout
+    public class svLogout : BaseServerPacket
     {
         public string Username { get; set; }
     }

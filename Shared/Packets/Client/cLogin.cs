@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace ClassLibrary.Packets.Client
+namespace Shared.Packets.Client
 {
     [Serializable]
-    public class cRegister
+    public class cLogin
     {
         public string Username { get; set; }
         public string Password { get; set; }
-        public string Email { get; set; }
     }
 }

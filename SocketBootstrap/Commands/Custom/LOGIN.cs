@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using ClassLibrary;
-using ClassLibrary.Extensions;
-using ClassLibrary.Models;
-using ClassLibrary.Packets.Client;
-using ClassLibrary.Packets.Server;
+using Shared;
+using Shared.Extensions;
+using Shared.Models;
+using Shared.Packets.Client;
+using Shared.Packets.Server;
 using SocketServer.Servers.Custom;
 using SuperSocket.SocketBase.Command;
 

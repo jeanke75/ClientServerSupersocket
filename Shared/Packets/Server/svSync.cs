@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace ClassLibrary.Packets.Server
+namespace Shared.Packets.Server
 {
     [Serializable]
-    public class svSync
+    public class svSync : BaseServerPacket
     {
         public DateTime clientTime { get; set; }
         public DateTime serverTime { get; set; }

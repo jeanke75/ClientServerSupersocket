@@ -1,10 +1,10 @@
-﻿using System;
-using ClassLibrary.Packets.Enums;
+﻿using Shared.Packets.Enums;
+using System;
 
-namespace ClassLibrary.Packets.Server
+namespace Shared.Packets.Server
 {
     [Serializable]
-    public class svChat
+    public class svChat : BaseServerPacket
     {
         public ChatTypes Type { get; set; } = ChatTypes.Normal;
         public string Message { get; set; }

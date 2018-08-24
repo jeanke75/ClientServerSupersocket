@@ -1,5 +1,5 @@
 ﻿using System;
-using ClassLibrary;
+using Shared;
 using SuperSocket.ProtoBase;
 
 namespace Client.Filters
@@ -26,6 +26,8 @@ namespace Client.Filters
                 byte[] r = new byte[buffer.Length - index];
                 Buffer.BlockCopy(buffer, index + 2, r, 0, buffer.Length - index - needle.Length);
                 Message m = MessageHelper.DeserializeMessage(r);
+
+                GameClient.bytesReceived += r.Length;
 
                 return new CustomPackageInfo(MessageHelper.Deserialize(m));
             }

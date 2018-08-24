@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ClassLibrary.Models;
+using Shared.Models;
 
-namespace ClassLibrary.Maps
+namespace Shared.Maps
 {
     public class BaseMap
     {

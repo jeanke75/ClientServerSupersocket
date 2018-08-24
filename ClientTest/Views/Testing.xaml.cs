@@ -5,12 +5,13 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using ClassLibrary.Maps;
-using ClassLibrary.Models;
-using ClassLibrary.Packets.Client;
-using ClassLibrary.Packets.Enums;
-using ClassLibrary.Packets.Server;
+using Shared.Maps;
+using Shared.Models;
+using Shared.Packets.Client;
+using Shared.Packets.Enums;
+using Shared.Packets.Server;
 using ClientTest.Models;
+using Client;
 
 namespace ClientTest.Views
 {
@@ -118,6 +119,9 @@ namespace ClientTest.Views
 
             switch (splitMessage[0])
             {
+                case "/info":
+                    ChatQueue.Enqueue(new svChat() { Type = ChatTypes.Error, Message = $"Up: {GameClient.bytesSent / 1000000}MB Down: {GameClient.bytesReceived / 1000000}MB \n Time running: {DateTime.Now - GameClient.startTime}" });
+                    break;
                 case "/w":
                 case "/whisper":
                     if (splitMessage.Length >= 3)
