@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using Shared.Models;
+﻿using Shared.Models;
 using Shared.Packets.Server;
 using SocketServer.Commands;
 using SuperSocket.SocketBase;
+using System;
+using System.Linq;
 
 namespace SocketServer.Servers.Custom
 {
@@ -29,13 +29,13 @@ namespace SocketServer.Servers.Custom
                 Player p = CustomServer.Accounts.First(x => x.Username == player.Username);
                 p.X = player.X;
                 p.Y = player.Y;
+                
+                (AppServer as CustomServer).simulations.TryGetValue(player.MapName, out Simulation sim);
+                if (sim._IsRunning && AppServer.GetAllSessions().Count(x => x.SessionID != SessionID && x.player != null && x.player.MapName == player.MapName) == 0) sim.Stop();
                 player = null;
             }
 
             Console.WriteLine("{0}: Session closed {1} ({2})", AppServer.Name, SessionID, reason);
-
-            Simulation sim = (AppServer as CustomServer).simulation;
-            if (sim._IsRunning && AppServer.GetAllSessions().Count(x => x.SessionID != SessionID) == 0) sim.Stop();
 
             base.OnSessionClosed(reason);
         }

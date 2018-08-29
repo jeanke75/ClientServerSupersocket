@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using Shared;
+﻿using Shared;
 using Shared.Extensions;
 using Shared.Models;
 using Shared.Packets.Client;
 using Shared.Packets.Server;
 using SocketServer.Servers.Custom;
 using SuperSocket.SocketBase.Command;
+using System;
+using System.Linq;
 
 namespace SocketServer.Commands.Custom
 {
@@ -62,7 +62,7 @@ namespace SocketServer.Commands.Custom
                                   select s.player).ToHashSet();
 
                 // start simulation loop if it's not already running
-                Simulation sim = (session.AppServer as CustomServer).simulation;
+                (session.AppServer as CustomServer).simulations.TryGetValue(p.MapName, out Simulation sim);
                 if (!sim._IsRunning) sim.Start();
 
                 // send succesfull login packet back to the client

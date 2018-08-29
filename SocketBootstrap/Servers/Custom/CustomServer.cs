@@ -1,4 +1,5 @@
-﻿using Shared.Models;
+﻿using Shared.Maps;
+using Shared.Models;
 using SocketServer.Data;
 using SocketServer.Data.Hardcoded;
 using SuperSocket.SocketBase;
@@ -16,30 +17,32 @@ namespace SocketServer.Servers.Custom
 
         public static HashSet<Player> Accounts;
         public static Random random = new Random();
-        
-        public Simulation simulation;
+
+        public Dictionary<string, Simulation> simulations = new Dictionary<string, Simulation>();
 
         public CustomServer() : base(new DefaultReceiveFilterFactory<CustomReceiverFilter, CustomDataRequest>())
         {
-            /*foreach (BaseMap map in mapRepo.GetMaps())
+            foreach (BaseMap map in mapRepo.GetMaps())
             {
-            }*/// TODO fix 1map per simulation and use dictionary to keep track of map simulation server
-            simulation = new Simulation(this, mapRepo.GetMaps().First());
-            simulation.Initialize();
+                Simulation simulation = new Simulation(this, map);
+                simulation.Initialize();
+                simulations.Add(map.Name, simulation);
+            }
+            
             Accounts = playerRepo.GetAccounts();
         }
 
         public override bool Start()
         {
-            //simulation.Start();
             return base.Start();
         }
 
         public override void Stop()
         {
-            if (simulation._IsRunning) simulation.Stop();
-            //if (Simulation.IsRunning) simulation.Stop();
-            //simulation.Stop();
+            foreach (Simulation sim in simulations.Values)
+            {
+                if (sim._IsRunning) sim.Stop();
+            }
             base.Stop();
         }
 

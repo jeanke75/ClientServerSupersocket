@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using Shared;
+﻿using Shared;
 using Shared.Maps;
 using Shared.Packets.Client;
 using Shared.Packets.Server;
 using SocketServer.Servers.Custom;
 using SuperSocket.SocketBase.Command;
+using System;
+using System.Linq;
 
 namespace SocketServer.Commands.Custom
 {

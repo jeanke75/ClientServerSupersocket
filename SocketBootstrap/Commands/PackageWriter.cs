@@ -11,7 +11,6 @@ namespace SocketServer.Commands
     {
         private static readonly byte[] header = Encoding.ASCII.GetBytes("##");
         private static readonly byte[] footer = Encoding.ASCII.GetBytes("$$");
-        private static Dictionary<CustomSession, Queue<BaseServerPacket>> OutgoingPackages = new Dictionary<CustomSession, Queue<BaseServerPacket>>();
 
         public static void Write(CustomSession session, BaseServerPacket obj)
         {
@@ -26,32 +25,23 @@ namespace SocketServer.Commands
             
             session.Send(rv, 0, rv.Length);
         }
-
-        public static void AddToQueue(CustomSession session, BaseServerPacket obj)
-        {
-            Queue<BaseServerPacket> queue = null;
-            if (!OutgoingPackages.TryGetValue(session, out queue))
-            {
-                queue = new Queue<BaseServerPacket>();
-                OutgoingPackages.Add(session, queue);
-            }
-
-            queue.Enqueue(obj);
-        }
         
         // TODO: manueel de packets serializen en kijken of er plaats is in de buffer alvorens toe te voegen, anders packet al versturen en nieuwe maken
-        public static void FlushAll()
+        public static void FlushAll(Dictionary<CustomSession, Queue<BaseServerPacket>> outgoingPackages)
         {
-            var packages = OutgoingPackages;
-
-            foreach (KeyValuePair<CustomSession, Queue<BaseServerPacket>> kv in OutgoingPackages)
+            if (outgoingPackages != null)
             {
-                svMulti m = new svMulti();
-                while (kv.Value.Count > 0)
+                var packages = outgoingPackages;
+
+                foreach (KeyValuePair<CustomSession, Queue<BaseServerPacket>> kv in packages)
                 {
-                    m.packets.Add(kv.Value.Dequeue());
+                    svMulti m = new svMulti();
+                    while (kv.Value.Count > 0)
+                    {
+                        m.packets.Add(kv.Value.Dequeue());
+                    }
+                    Write(kv.Key, m);
                 }
-                Write(kv.Key, m);
             }
         }
     }

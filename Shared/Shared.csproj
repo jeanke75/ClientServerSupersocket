@@ -52,6 +52,7 @@
     <Compile Include="Packets\Client\cMove.cs" />
     <Compile Include="Packets\Client\cRegister.cs" />
     <Compile Include="Packets\Client\cSync.cs" />
+    <Compile Include="Packets\Client\cTeleport.cs" />
     <Compile Include="Packets\Enums\ChatTypes.cs" />
     <Compile Include="Packets\Enums\PacketTypes.cs" />
     <Compile Include="Packets\PacketSerializer.cs" />
@@ -59,6 +60,8 @@
     <Compile Include="Packets\Server\svChat.cs" />
     <Compile Include="Packets\Server\svLogin.cs" />
     <Compile Include="Packets\Server\svLogout.cs" />
+    <Compile Include="Packets\Server\svTeleport.cs" />
+    <Compile Include="Packets\Server\svTeleport_ack.cs" />
     <Compile Include="Packets\Server\svMove.cs" />
     <Compile Include="Packets\Server\svMulti.cs" />
     <Compile Include="Packets\Server\svRegister.cs" />

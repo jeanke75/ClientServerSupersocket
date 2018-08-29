@@ -12,6 +12,7 @@
                     <MenuItem Name="mniLogOtherPlayerDisconnect" Header="Other player disconnect" IsCheckable="True" IsChecked="True" />
                     <Separator />
                     <MenuItem Name="mniLogMovement" Header="Movement" IsCheckable="True" IsChecked="True" />
+                    <MenuItem Name="mniLogTeleport" Header="Teleport" IsCheckable="True" IsChecked="True" />
                     <Separator />
                     <MenuItem Name="mniLogMessage" Header="Message" IsCheckable="True" IsChecked="True" />
                 </MenuItem>

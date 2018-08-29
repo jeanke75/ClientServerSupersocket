@@ -93,6 +93,7 @@
     <Compile Include="Commands\Custom\REGISTER.cs" />
     <Compile Include="Commands\Custom\CHAT.cs" />
     <Compile Include="Commands\Custom\LOGIN.cs" />
+    <Compile Include="Commands\Custom\TELEPORT.cs" />
     <Compile Include="Commands\Custom\SYNC.cs" />
     <Compile Include="Commands\PackageWriter.cs" />
     <Compile Include="Config\ConfigHelper.cs" />

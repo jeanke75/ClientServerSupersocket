@@ -46,14 +46,16 @@ namespace ClientTest.Views
             hero.MapName = login.MapName;
             otherPlayers = login.Players;
 
-            cMap.Height = Maps[hero.MapName].Height / 8;
-            cMap.Width = Maps[hero.MapName].Width / 8;
+            ShowCurrentMap();
 
             main.client.MovementMessageReceived += HandleMovement;
             main.client.LogoutMessageReceived += HandleLogout;
 
             lbChat.ItemsSource = ChatQueue;
             main.client.ChatMessageReceived += HandleChat;
+
+            main.client.TeleportAckMessageReceived += HandleTeleportAck;
+            main.client.TeleportMessageReceived += HandleTeleport;
         }
 
         public void Dispose()
@@ -69,6 +71,12 @@ namespace ClientTest.Views
             Maps.Add("Wild1", new BaseMap() { Height = 800, Width = 2400 });
         }
 
+        private void ShowCurrentMap()
+        {
+            cMap.Height = Maps[hero.MapName].Height / 8;
+            cMap.Width = Maps[hero.MapName].Width / 8;
+        }
+
         private void GameLoop_Tick(object sender, ElapsedEventArgs e)
         {
             Dispatcher.BeginInvoke((Action)delegate ()
@@ -81,7 +89,7 @@ namespace ClientTest.Views
                     {
                         Height = 3,
                         Width = 3,
-                        Fill = System.Windows.Media.Brushes.Yellow
+                        Fill = (p.Username.ToLower().Contains("bot") ? System.Windows.Media.Brushes.Red : System.Windows.Media.Brushes.Yellow)
                     };
                     cMap.Children.Add(r);
                     Canvas.SetLeft(r, p.X / 8);
@@ -92,7 +100,7 @@ namespace ClientTest.Views
                 {
                     Height = 3,
                     Width = 3,
-                    Fill = System.Windows.Media.Brushes.Red
+                    Fill = System.Windows.Media.Brushes.Green
                 };
                 cMap.Children.Add(rect);
                 Canvas.SetLeft(rect, hero.X / 8);
@@ -114,6 +122,11 @@ namespace ClientTest.Views
             {
                 case "/info":
                     ChatQueue.Enqueue(new svChat() { Type = ChatTypes.Error, Message = $"Up: {GameClient.bytesSent / 1000000}MB Down: {GameClient.bytesReceived / 1000000}MB \n Time running: {DateTime.Now - GameClient.startTime}" });
+                    break;
+                case "/tp":
+                case "/teleport":
+                    if (splitMessage.Length == 4)
+                        main.client.SendMessage(new cTeleport() { MapName = splitMessage[1], X = ushort.Parse(splitMessage[2]), Y = ushort.Parse(splitMessage[3]) });
                     break;
                 case "/w":
                 case "/whisper":
@@ -221,9 +234,81 @@ namespace ClientTest.Views
 
         private void HandleLogout(svLogout logout)
         {
-            if (main.mniLogOtherPlayerDisconnect.IsChecked)
-                main.log.WriteLine(logout.Username + " disconnected");
-            otherPlayers.RemoveWhere(x => x.Username == logout.Username);
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                if (main.mniLogOtherPlayerDisconnect.IsChecked)
+                    main.log.WriteLine(logout.Username + " disconnected");
+                otherPlayers.RemoveWhere(x => x.Username == logout.Username);
+            });
+        }
+
+        private void HandleTeleportAck(svTeleport_ack teleport)
+        {
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                if (teleport.Success)
+                {
+                    if (main.mniLogTeleport.IsChecked)
+                        main.log.WriteLine("Teleported to " + teleport.MapName + "(" + teleport.X + ", " + teleport.Y + ")");
+                    hero.X = teleport.X;
+                    hero.Y = teleport.Y;
+                    if (teleport.MapName != hero.MapName)
+                    {
+                        hero.MapName = teleport.MapName;
+                        otherPlayers.Clear();
+                        foreach (Player other in  teleport.Players)
+                        {
+                            otherPlayers.Add(other);
+                        }
+                        ShowCurrentMap();
+                    }
+                }
+                else
+                {
+                    if (main.mniLogTeleport.IsChecked)
+                        main.log.WriteLine("Teleport invalid");
+                    ChatQueue.Enqueue(new svChat() { Type = ChatTypes.Error, Message = "Invalid teleport parameters" });
+                }
+            });
+        }
+
+        private void HandleTeleport(svTeleport teleport)
+        {
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                if (main.mniLogTeleport.IsChecked)
+                    main.log.WriteLine(teleport.Username + " teleported to " + teleport.MapName + "(" + teleport.X + ", " + teleport.Y + ")");
+
+                if (teleport.Username != null)
+                {
+                    Player other = otherPlayers.Where(x => x.Username == teleport.Username).FirstOrDefault();
+                    // known player 
+                    if (other != null)
+                    {
+                        // from this map to this map
+                        if (other.MapName == hero.MapName)
+                        {
+                            other.X = teleport.X;
+                            other.Y = teleport.Y;
+                        }
+                        // from this map to other map
+                        else
+                        {
+                            otherPlayers.RemoveWhere(x => x.Username == teleport.Username);
+                        }
+                    }
+                    // unknown player
+                    else
+                    {
+                        // from this map to this map
+                        // from other map to this map
+                        if (teleport.MapName == hero.MapName)
+                        {
+                            otherPlayers.Add(new Player() { Username = teleport.Username, X = teleport.X, Y = teleport.Y });
+                        }
+                    }
+                }
+            });
         }
     }
 }

@@ -38,6 +38,12 @@ namespace Client
         public delegate void MovementMessageDelegate(svMove move);
         public MovementMessageDelegate MovementMessageReceived;
 
+        public delegate void TeleportAckMessageDelegate(svTeleport_ack teleport);
+        public TeleportAckMessageDelegate TeleportAckMessageReceived;
+
+        public delegate void TeleportMessageDelegate(svTeleport teleport);
+        public TeleportMessageDelegate TeleportMessageReceived;
+
         public static long bytesReceived = 0;
         public static long bytesSent = 0;
         public static DateTime startTime = DateTime.Now;
@@ -109,6 +115,8 @@ namespace Client
             else if (command is svLogin) LoginMessageReceived(command as svLogin);
             else if (command is svLogout) LogoutMessageReceived(command as svLogout);
             else if (command is svRegister) RegisterMessageReceived(command as svRegister);
+            else if (command is svTeleport_ack) TeleportAckMessageReceived(command as svTeleport_ack);
+            else if (command is svTeleport) TeleportMessageReceived(command as svTeleport);
         }
 
         public void SendMessage(object o)

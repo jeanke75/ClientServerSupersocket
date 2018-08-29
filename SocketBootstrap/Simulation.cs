@@ -33,6 +33,7 @@ namespace SocketServer
 
         #region Game World
         public ConcurrentQueue<Message> packetsIn = new ConcurrentQueue<Message>();
+        private Dictionary<CustomSession, Queue<BaseServerPacket>> packetsOut = new Dictionary<CustomSession, Queue<BaseServerPacket>>();
         public List<Bot> bots = new List<Bot>();
         public BaseMap map;
         #endregion
@@ -104,7 +105,7 @@ namespace SocketServer
                         if (b.X != xTmp || b.Y != yTmp)
                         {
                             server.GetAllSessions().Where(x => x.player != null && x.player.MapName == b.MapName)
-                                 .AsParallel().ForAll(x => { PackageWriter.AddToQueue(x, new svMove() { Success = true, Username = b.Username, X = b.X, Y = b.Y }); });
+                                 .AsParallel().ForAll(x => { AddToQueue(x, new svMove() { Success = true, Username = b.Username, X = b.X, Y = b.Y }); });
                         }
                     }
 
@@ -118,8 +119,20 @@ namespace SocketServer
                 //State state = currentState * alpha + previousState * (1.0 - alpha);
 
                 //send updates to affected clients*/
-                PackageWriter.FlushAll();
+                PackageWriter.FlushAll(packetsOut);
             }
+        }
+
+        public void AddToQueue(CustomSession session, BaseServerPacket obj)
+        {
+            Queue<BaseServerPacket> queue = null;
+            if (!packetsOut.TryGetValue(session, out queue))
+            {
+                queue = new Queue<BaseServerPacket>();
+                packetsOut.Add(session, queue);
+            }
+
+            queue.Enqueue(obj);
         }
         #endregion
     }
