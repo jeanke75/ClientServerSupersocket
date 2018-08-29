@@ -69,6 +69,7 @@ namespace ClientTest.Views
         {
             Maps.Add("Town1", new BaseMap() { Height = 1600, Width = 1600 });
             Maps.Add("Wild1", new BaseMap() { Height = 800, Width = 2400 });
+            Maps.Add("Wild2", new BaseMap() { Height = 800, Width = 800 });
         }
 
         private void ShowCurrentMap()
@@ -201,7 +202,7 @@ namespace ClientTest.Views
             {
                 if (move.Success) // packet from other
                 {
-                    if (move.Username != null)
+                    if (move.Username != null && move.MapName != null && move.MapName == hero.MapName)
                     {
                         Player other = otherPlayers.Where(x => x.Username == move.Username).FirstOrDefault();
                         if (other != null) // known player

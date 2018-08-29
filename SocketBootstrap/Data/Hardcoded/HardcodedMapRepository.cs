@@ -64,6 +64,12 @@ namespace SocketServer.Data.Hardcoded
                         bots.Add(new PatrolBot(sim, waypoints));
                     }
                     break;
+                case "Wild2":
+                    for (int i = 0; i < 10; i++)
+                    {
+                        bots.Add(new AggroBot(sim, new Point(random.Next(100, 700), random.Next(100, 700)), 50, 100));
+                    }
+                    break;
             }
 
             return bots;
@@ -74,7 +80,8 @@ namespace SocketServer.Data.Hardcoded
             return new List<BaseMap>()
             {
                 new BaseMap() { Name = "Town1", Height = 1600, Width = 1600 },
-                new BaseMap() { Name="Wild1", Height = 800, Width = 2400 }
+                new BaseMap() { Name = "Wild1", Height = 800, Width = 2400 },
+                new BaseMap() { Name = "Wild2", Height = 800, Width = 800 }
             };
         }
     }

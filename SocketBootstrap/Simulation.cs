@@ -20,7 +20,7 @@ namespace SocketServer
         public volatile bool _IsRunning = false;
 
         #region Global Var
-        private CustomServer server = null;
+        public CustomServer server = null;
         private Stopwatch timer = null;
 
         private ThreadStart _SimulationThreadStart = null;
@@ -105,7 +105,7 @@ namespace SocketServer
                         if (b.X != xTmp || b.Y != yTmp)
                         {
                             server.GetAllSessions().Where(x => x.player != null && x.player.MapName == b.MapName)
-                                 .AsParallel().ForAll(x => { AddToQueue(x, new svMove() { Success = true, Username = b.Username, X = b.X, Y = b.Y }); });
+                                 .AsParallel().ForAll(x => { AddToQueue(x, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y }); });
                         }
                     }
 
@@ -162,9 +162,9 @@ public class Bot : Player
 
 public class RoamBot : Bot
 {
-    private readonly ushort spawnX;
-    private readonly ushort spawnY;
-    private readonly ushort roamRange;
+    protected readonly ushort spawnX;
+    protected readonly ushort spawnY;
+    protected readonly ushort roamRange;
     private Point waypoint;
     private int sleepCycles = 0;
 
@@ -260,5 +260,72 @@ public class PatrolBot : Bot
         // if the target is close to the waypoint add the waypoint to the back of the queue
         if (Math.Abs(p.X - X) <= moveSpeedMax && Math.Abs(p.Y - Y) < moveSpeedMax)
             waypoints.Enqueue(waypoints.Dequeue());
+    }
+}
+
+public class AggroBot : RoamBot
+{
+    private ushort aggroRange;
+    private Player target;
+
+    public AggroBot(Simulation sim, Point spawn) : base(sim, spawn)
+    {
+        aggroRange = (ushort)(roamRange + 30);
+    }
+
+    public AggroBot(Simulation sim, Point spawn, ushort roamRange, ushort aggroRange) : base(sim, spawn, roamRange)
+    {
+        this.aggroRange = (aggroRange >= roamRange ? aggroRange : roamRange);
+    }
+
+    public override void DoMove()
+    {
+        // check if we have a target, otherwise try to find a new target
+        if (target == null)
+        {
+            target = simulation.server.GetAllSessions().FirstOrDefault(x => x.player != null && x.player.MapName == simulation.map.Name && IsTargetInAggroRange(x.player))?.player;
+        }
+
+        // if there is a target go to it, otherwise roam around
+        if (target != null)
+        {
+            // check if the target has not teleported and is still within aggro range
+            if (target.MapName == simulation.map.Name && IsTargetInAggroRange(target))
+            {
+                // check if target has been reached, if not move towards it otherwise do nothing
+                if (Math.Abs(target.X - X) >= moveSpeedMax || Math.Abs(target.Y - Y) >= moveSpeedMax)
+                {
+                    // calculate the distance
+                    int offsetX = target.X - X;
+                    int offsetY = target.Y - Y;
+
+                    // determine which distance is the furthest for the steps needed to reach the destination
+                    double steps = Math.Abs(Math.Round((Math.Abs(offsetX) > Math.Abs(offsetY) ? offsetX / (float)moveSpeedMax : offsetY / (float)moveSpeedMax)));
+
+                    // steps
+                    X += (ushort)Math.Round(offsetX / steps);
+                    Y += (ushort)Math.Round(offsetY / steps);
+                }
+            }
+            else
+            {
+                // if the target can't be reached remove the target
+                target = null;
+            }
+        }
+        else
+        {
+            base.DoMove();
+        }
+    }
+
+    private bool IsTargetInAggroRange(Player p)
+    {
+        return IsValueInRange(p.X, spawnX - aggroRange, spawnX + aggroRange) && IsValueInRange(p.Y, spawnY - aggroRange, spawnY + aggroRange);
+    }
+
+    private bool IsValueInRange(int value, int min, int max)
+    {
+        return (value >= min && value <= max);
     }
 }
