@@ -97,6 +97,10 @@
     <Compile Include="Commands\PackageWriter.cs" />
     <Compile Include="Config\ConfigHelper.cs" />
     <Compile Include="Config\AccountConfig.cs" />
+    <Compile Include="Data\Hardcoded\HardcodedMapRepository.cs" />
+    <Compile Include="Data\Hardcoded\HardcodedPlayerRepository.cs" />
+    <Compile Include="Data\IMapRepository.cs" />
+    <Compile Include="Data\IPlayerRepository.cs" />
     <Compile Include="Servers\Custom\CustomDataRequest.cs" />
     <Compile Include="Servers\Custom\CustomReceiverFilter.cs" />
     <Compile Include="Servers\Custom\CustomServer.cs" />
