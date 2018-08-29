@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using Client;
+﻿using Client;
 using ClientTest.Views;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ClientTest
 {
@@ -11,10 +11,13 @@ namespace ClientTest
     public partial class MainWindow : Window
     {
         public GameClient client;
+        public LogWindow log { get; private set; }
+
         public MainWindow()
         {
             InitializeComponent();
             SetContent(new PickServer(this));
+            log = new LogWindow();
         }
 
         public void SetContent(UserControl c)
@@ -26,6 +29,29 @@ namespace ClientTest
         {
             if (client != null && client.IsConnected)
                 client.Stop();
+            if (log != null)
+                log.Close();
+        }
+
+        private void Window_StateChanged(object sender, System.EventArgs e)
+        {
+            if (log != null)
+                log.WindowState = WindowState;
+        }
+
+        private void mniLogStatus_Click(object sender, RoutedEventArgs e)
+        {
+            if (log != null)
+            {
+                if (log.Visibility != Visibility.Visible)
+                {
+                    log.Show();
+                }
+                else
+                {
+                    log.Hide();
+                }
+            }
         }
     }
 }

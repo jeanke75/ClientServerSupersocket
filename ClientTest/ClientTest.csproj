@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="LogWindow.xaml.cs">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\ObservableQueue.cs" />
     <Compile Include="TemplateSelectors\ChatTemplateSelector.cs" />
     <Compile Include="Views\Loading.xaml.cs">
@@ -69,6 +72,10 @@
     <Compile Include="Views\Testing.xaml.cs">
       <DependentUpon>Testing.xaml</DependentUpon>
     </Compile>
+    <Page Include="LogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

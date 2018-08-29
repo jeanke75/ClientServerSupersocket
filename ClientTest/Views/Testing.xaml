@@ -3,18 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:ClientTest.Views"
              xmlns:templateSelectors="clr-namespace:ClientTest.TemplateSelectors"
              mc:Ignorable="d" 
-             d:DesignWidth="1000">
+             d:DesignWidth="500">
     <UserControl.Resources>
         <templateSelectors:ChatTemplateSelector x:Key="MyChatTemplateSelector"/>
     </UserControl.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="200"/>
             <RowDefinition Height="auto"/>
@@ -84,14 +79,7 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </DockPanel>
-        <ListBox x:Name="lbConsole" Background="Black" Foreground="White" Grid.Column="1">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel VerticalAlignment="Bottom"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left">
             <StackPanel >
                 <Button x:Name="btnMoveUp" Content="Move Up"  Height="20" Width="75" Click="btnMoveUp_Click"/>
                 <Button x:Name="btnMoveDown" Content="Move Down"  Height="20" Width="75" Click="btnMoveDown_Click"/>
@@ -100,5 +88,6 @@
             </StackPanel>
             <Canvas x:Name="cMap" Width="100" Background="Black" />
         </StackPanel>
+        
     </Grid>
 </UserControl>

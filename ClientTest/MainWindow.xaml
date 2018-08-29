@@ -1,7 +1,22 @@
 ﻿<Window x:Class="ClientTest.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:ClientTest"
-        Title="MainWindow" Height="600" Width="1000" Closing="Window_Closing">
-    <ContentControl x:Name="ccView"/>
+        Title="MainWindow" Height="600" Width="500" Closing="Window_Closing" StateChanged="Window_StateChanged">
+    <StackPanel>
+        <Menu DockPanel.Dock="Top" Grid.ColumnSpan="2">
+            <MenuItem Header="_Options">
+                <MenuItem Header="_Log">
+                    <MenuItem Name="mniLogStatus" Header="Show/Hide" Click="mniLogStatus_Click" />
+                    <Separator />
+                    <MenuItem Name="mniLogSpawn" Header="Spawn" IsCheckable="True" IsChecked="True" />
+                    <MenuItem Name="mniLogOtherPlayerDisconnect" Header="Other player disconnect" IsCheckable="True" IsChecked="True" />
+                    <Separator />
+                    <MenuItem Name="mniLogMovement" Header="Movement" IsCheckable="True" IsChecked="True" />
+                    <Separator />
+                    <MenuItem Name="mniLogMessage" Header="Message" IsCheckable="True" IsChecked="True" />
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <ContentControl x:Name="ccView"/>
+    </StackPanel>
 </Window>

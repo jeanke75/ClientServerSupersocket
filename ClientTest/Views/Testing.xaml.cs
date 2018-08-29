@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Client;
+using ClientTest.Models;
+using Shared.Maps;
+using Shared.Models;
+using Shared.Packets.Client;
+using Shared.Packets.Enums;
+using Shared.Packets.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using Shared.Maps;
-using Shared.Models;
-using Shared.Packets.Client;
-using Shared.Packets.Enums;
-using Shared.Packets.Server;
-using ClientTest.Models;
-using Client;
 
 namespace ClientTest.Views
 {
@@ -25,12 +25,7 @@ namespace ClientTest.Views
         Timer GameLoop = new Timer(100);
 
         Dictionary<string, BaseMap> Maps = new Dictionary<string, BaseMap>();
-
-        ObservableQueue<svChat> chatQueue = new ObservableQueue<svChat>();
-        public ObservableQueue<svChat> ChatQueue { get { return chatQueue; } }
-
-        ObservableQueue<string> consoleQueue = new ObservableQueue<string>();
-        public ObservableQueue<string> ConsoleQueue { get { return consoleQueue; } }
+        public ObservableQueue<svChat> ChatQueue { get; } = new ObservableQueue<svChat>();
 
         Player hero = new Player();
         HashSet<Player> otherPlayers = new HashSet<Player>();
@@ -39,8 +34,6 @@ namespace ClientTest.Views
         {
             InitializeComponent();
             this.main = main;
-
-            lbConsole.ItemsSource = ConsoleQueue;
 
             LoadMaps();
 
@@ -154,7 +147,8 @@ namespace ClientTest.Views
         {
             Application.Current.Dispatcher.Invoke(delegate
             {
-                WriteToConsole("Chat message received");
+                if (main.mniLogMessage.IsChecked)
+                    main.log.WriteLine("Chat message received");
                 if (ChatQueue.Count() > 50) ChatQueue.Dequeue();
                 ChatQueue.Enqueue(chat);
             });
@@ -190,7 +184,7 @@ namespace ClientTest.Views
 
         private void HandleMovement(svMove move)
         {
-            lbConsole.Dispatcher.Invoke(delegate
+            Application.Current.Dispatcher.Invoke(delegate
             {
                 if (move.Success) // packet from other
                 {
@@ -199,24 +193,26 @@ namespace ClientTest.Views
                         Player other = otherPlayers.Where(x => x.Username == move.Username).FirstOrDefault();
                         if (other != null) // known player
                         {
-                            WriteToConsole(move.Username + " move (" + move.X + ", " + move.Y + ")");
+                            if (main.mniLogMovement.IsChecked)
+                                main.log.WriteLine(move.Username + " move (" + move.X + ", " + move.Y + ")");
                             other.X = move.X;
                             other.Y = move.Y;
                         }
                         else // new player
                         {
-                            WriteToConsole(move.Username + " spawn (" + move.X + ", " + move.Y + ")");
+                            if (main.mniLogSpawn.IsChecked)
+                                main.log.WriteLine(move.Username + " spawn (" + move.X + ", " + move.Y + ")");
                             otherPlayers.Add(new Player() { Username = move.Username, X = move.X, Y = move.Y });
                         }
                     }
                 }
                 else if (move.ErrorMessage != null)
                 {
-                    WriteToConsole("Something went wrong during movement: " + move.ErrorMessage);
+                    main.log.WriteLine("Something went wrong during movement: " + move.ErrorMessage);
                 }
                 else
                 {
-                    WriteToConsole("Invalid move! (cheating?!) Moved back to (" + move.X + ", " + move.Y + ")");
+                    main.log.WriteLine("Invalid move! (cheating?!) Moved back to (" + move.X + ", " + move.Y + ")");
                     hero.X = move.X;
                     hero.Y = move.Y;
                 }
@@ -225,17 +221,9 @@ namespace ClientTest.Views
 
         private void HandleLogout(svLogout logout)
         {
-            lbConsole.Dispatcher.Invoke(delegate
-            {
-                WriteToConsole(logout.Username + " disconnected");
-                otherPlayers.RemoveWhere(x => x.Username == logout.Username);
-            });
-        }
-
-        private void WriteToConsole(string msg)
-        {
-            if (ConsoleQueue.Count() > 50) ConsoleQueue.Dequeue();
-            ConsoleQueue.Enqueue(msg);
+            if (main.mniLogOtherPlayerDisconnect.IsChecked)
+                main.log.WriteLine(logout.Username + " disconnected");
+            otherPlayers.RemoveWhere(x => x.Username == logout.Username);
         }
     }
 }
