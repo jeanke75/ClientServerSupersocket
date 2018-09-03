@@ -10,6 +10,8 @@ namespace ClientTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static bool ApplicationClosing { get; private set; } = false;
+
         public GameClient client;
         public LogWindow log { get; private set; }
 
@@ -23,14 +25,6 @@ namespace ClientTest
         public void SetContent(UserControl c)
         {
             ccView.Content = c;
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (client != null && client.IsConnected)
-                client.Stop();
-            if (log != null)
-                log.Close();
         }
 
         private void Window_StateChanged(object sender, System.EventArgs e)
@@ -52,6 +46,14 @@ namespace ClientTest
                     log.Hide();
                 }
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (client != null && client.IsConnected)
+                client.Stop();
+            if (log != null)
+                log.ForceClose();
         }
     }
 }

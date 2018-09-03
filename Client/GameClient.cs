@@ -63,17 +63,17 @@ namespace Client
 
         private void Connected(object sender, EventArgs e)
         {
-            SocketOpen(sender, e);
+            SocketOpen?.Invoke(sender, e);
         }
 
         private void Closed(object sender, EventArgs e)
         {
-            SocketClosed(sender, e);
+            SocketClosed?.Invoke(sender, e);
         }
 
         private void Error(object sender, ErrorEventArgs e)
         {
-            SocketError(sender, e);
+            SocketError?.Invoke(sender, e);
         }
 
         public async Task Start()

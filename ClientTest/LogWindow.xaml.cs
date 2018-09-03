@@ -11,6 +11,7 @@ namespace ClientTest
     {
         public ObservableQueue<string> LogQueue { get; } = new ObservableQueue<string>();
         private const uint MAX_LOG = 50;
+        private bool closing = false;
 
         public LogWindow()
         {
@@ -21,11 +22,29 @@ namespace ClientTest
 
         public void WriteLine(string message)
         {
-            Application.Current.Dispatcher.Invoke(delegate
+            if (Visibility == Visibility.Visible)
             {
-                if (LogQueue.Count() > MAX_LOG) LogQueue.Dequeue();
-                LogQueue.Enqueue(message);
-            });
+                Application.Current.Dispatcher.Invoke(delegate
+                {
+                    if (LogQueue.Count() > MAX_LOG) LogQueue.Dequeue();
+                    LogQueue.Enqueue(message);
+                });
+            }
+        }
+
+        public void ForceClose()
+        {
+            closing = true;
+            Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!closing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
         }
     }
 }
