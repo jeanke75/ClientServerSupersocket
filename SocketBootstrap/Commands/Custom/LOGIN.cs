@@ -69,7 +69,7 @@ namespace SocketServer.Commands.Custom
                 PackageWriter.Write(session, logins);
 
                 session.AppServer.GetAllSessions().Where(x => x.player != null && x.SessionID != session.SessionID && x.player.MapName == p.MapName)
-                                 .AsParallel().ForAll(x => { PackageWriter.Write(x, new svMove() { Success = true, Username = p.Username, X = p.X, Y = p.Y }); });
+                                 .AsParallel().ForAll(x => { PackageWriter.Write(x, new svMove() { Success = true, Username = p.Username, MapName = p.MapName, X = p.X, Y = p.Y }); });
 
                 // send data to all connected clients on the players map
                 /*foreach (CustomSession otherSession in session.AppServer.GetAllSessions().Where(x => x.player != null && x.SessionID != session.SessionID && x.player.MapName == p.MapName))

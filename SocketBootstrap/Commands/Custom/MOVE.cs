@@ -28,7 +28,7 @@ namespace SocketServer.Commands.Custom
             try
             {
                 cMove movec = MessageHelper.Deserialize(requestInfo.Message) as cMove;
-
+                
                 BaseMap map = new BaseMap();
                 if (movec.X > map.Width) movec.X = map.Width;
                 if (movec.Y > map.Height) movec.Y = map.Height;
@@ -58,6 +58,7 @@ namespace SocketServer.Commands.Custom
                     moves.Username = session.player.Username;
                     moves.X = session.player.X;
                     moves.Y = session.player.Y;
+                    moves.MapName = session.player.MapName;
 
                     // send movement to all players in the same server (change to map or part of map only later)
                     foreach (CustomSession otherSession in session.AppServer.GetAllSessions().Where(x => x.player != null && x.player.MapName == session.player.MapName && x.SessionID != session.SessionID))

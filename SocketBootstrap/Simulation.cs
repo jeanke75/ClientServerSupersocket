@@ -62,6 +62,7 @@ namespace SocketServer
             _IsRunning = true;
             timer.Start();
             SimulationThread = new Thread(_SimulationThreadStart);
+            SimulationThread.IsBackground = true;
             SimulationThread.Start();
         }
 
@@ -265,7 +266,7 @@ public class PatrolBot : Bot
 
 public class AggroBot : RoamBot
 {
-    private ushort aggroRange;
+    private readonly ushort aggroRange;
     private Player target;
 
     public AggroBot(Simulation sim, Point spawn) : base(sim, spawn)
