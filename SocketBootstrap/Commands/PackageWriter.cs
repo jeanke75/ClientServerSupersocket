@@ -22,8 +22,8 @@ namespace SocketServer.Commands
             Buffer.BlockCopy(header, 0, rv, 0, header.Length);
             Buffer.BlockCopy(b, 0, rv, header.Length, b.Length);
             Buffer.BlockCopy(footer, 0, rv, header.Length + b.Length, footer.Length);
-            
-            session.Send(rv, 0, rv.Length);
+
+            session?.Send(rv, 0, rv.Length);
         }
         
         // TODO: manueel de packets serializen en kijken of er plaats is in de buffer alvorens toe te voegen, anders packet al versturen en nieuwe maken

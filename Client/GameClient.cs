@@ -12,11 +12,8 @@ namespace Client
     public sealed class GameClient
     {
         EasyClient client;
-        IPEndPoint endpoint;
-
         readonly byte[] header = Encoding.ASCII.GetBytes("##");
         readonly byte[] footer = Encoding.ASCII.GetBytes("$$");
-
 
         public event EventHandler SocketOpen;
         public event EventHandler SocketClosed;
@@ -48,6 +45,9 @@ namespace Client
         public static long bytesSent = 0;
         public static DateTime startTime = DateTime.Now;
 
+        public bool IsConnected { get { return client.IsConnected; } }
+        public IPEndPoint Endpoint { get; }
+
         public GameClient(IPEndPoint endpoint)
         {
             client = new EasyClient();
@@ -58,7 +58,7 @@ namespace Client
 
             client.Initialize(new CustomReceiveFilter(header, footer), MessageReceived);
 
-            this.endpoint = endpoint;
+            Endpoint = endpoint;
         }
 
         private void Connected(object sender, EventArgs e)
@@ -78,7 +78,7 @@ namespace Client
 
         public async Task Start()
         {
-            await client.ConnectAsync(endpoint);
+            await client.ConnectAsync(Endpoint);
         }
 
         public void Stop()
@@ -88,12 +88,6 @@ namespace Client
 
         private void MessageReceived(CustomPackageInfo obj)
         {
-            /*if (obj.Data is svMove) MovementMessageReceived(obj.Data as svMove);
-            else if (obj.Data is svChat) ChatMessageReceived(obj.Data as svChat);
-            else if (obj.Data is svSync) SyncMessageReceived(obj.Data as svSync);
-            else if (obj.Data is svLogin) LoginMessageReceived(obj.Data as svLogin);
-            else if (obj.Data is svLogout) LogoutMessageReceived(obj.Data as svLogout);
-            else if (obj.Data is svRegister) RegisterMessageReceived(obj.Data as svRegister);*/
             if (obj.Data is svMulti)
             {
                 foreach (BaseServerPacket p in ((svMulti)obj.Data).packets)
@@ -109,14 +103,14 @@ namespace Client
 
         private void HandleMessage(BaseServerPacket command)
         {
-            if (command is svMove) MovementMessageReceived(command as svMove);
-            else if (command is svChat) ChatMessageReceived(command as svChat);
-            else if (command is svSync) SyncMessageReceived(command as svSync);
-            else if (command is svLogin) LoginMessageReceived(command as svLogin);
-            else if (command is svLogout) LogoutMessageReceived(command as svLogout);
-            else if (command is svRegister) RegisterMessageReceived(command as svRegister);
-            else if (command is svTeleport_ack) TeleportAckMessageReceived(command as svTeleport_ack);
-            else if (command is svTeleport) TeleportMessageReceived(command as svTeleport);
+            if (command is svMove) MovementMessageReceived?.Invoke(command as svMove);
+            else if (command is svChat) ChatMessageReceived?.Invoke(command as svChat);
+            else if (command is svSync) SyncMessageReceived?.Invoke(command as svSync);
+            else if (command is svLogin) LoginMessageReceived?.Invoke(command as svLogin);
+            else if (command is svLogout) LogoutMessageReceived?.Invoke(command as svLogout);
+            else if (command is svRegister) RegisterMessageReceived?.Invoke(command as svRegister);
+            else if (command is svTeleport_ack) TeleportAckMessageReceived?.Invoke(command as svTeleport_ack);
+            else if (command is svTeleport) TeleportMessageReceived?.Invoke(command as svTeleport);
         }
 
         public void SendMessage(object o)
@@ -131,8 +125,5 @@ namespace Client
             client.Send(rv);
             bytesSent += rv.Length;
         }
-
-        public bool IsConnected { get { return client.IsConnected; } }
-        public IPEndPoint Endpoint { get { return endpoint; } }
     }
 }
