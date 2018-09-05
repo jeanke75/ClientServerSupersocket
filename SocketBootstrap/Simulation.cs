@@ -78,7 +78,7 @@ namespace SocketServer
         private void SimulationMethod()
         {
             double t = 0.0;
-            double dt = 1000.0D / 5.0D;
+            double dt = 1000.0D / 30.0D;
 
             long currentTime = timer.ElapsedMilliseconds;
             double accumulator = 0.0;
@@ -100,20 +100,37 @@ namespace SocketServer
 
                     foreach (Bot b in bots)
                     {
-                        ushort xTmp = b.X;
-                        ushort yTmp = b.Y;
                         b.DoMove();
-                        if (b.X != xTmp || b.Y != yTmp)
-                        {
-                            server.GetAllSessions().Where(x => x.player != null && x.player.MapName == b.MapName)
-                                 .AsParallel().ForAll(x => { AddToQueue(x, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y }); });
-                        }
+                        /*server.GetAllSessions().Where(x => x.player != null && x.player.MapName == b.MapName)
+                                .AsParallel().ForAll(x => { AddToQueue(x, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y }); });*/
                     }
 
                     t += dt;
                     accumulator -= dt;
                 }
 
+                var sessions = server.GetAllSessions().Where(x => x.player != null && x.player.MapName == map.Name);
+                /* //only send updates for objects in a 200 x 200 square surrounding the player, should reduce package size alot!!! TODO: test package sizes
+                var dirtyBots = bots.Where(x => x.isDirty);
+                foreach (CustomSession s in sessions)
+                {
+                    foreach (Bot b in dirtyBots.Where(x => (x.X >= s.player.X - 100 && x.X <= s.player.X + 100) && (x.Y >= s.player.Y - 100 && x.Y <= s.player.Y + 100)))
+                    {
+                        AddToQueue(s, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y });
+                    }
+                }
+                foreach (Bot b in dirtyBots)
+                {
+                    b.isDirty = false;
+                }*/
+                foreach (Bot b in bots.Where(x => x.isDirty))
+                {
+                    foreach (CustomSession s in sessions)
+                    {
+                        AddToQueue(s, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y });
+                    }
+                    b.isDirty = false;
+                }
 
                 //const double alpha = accumulator / dt;
 
@@ -141,6 +158,7 @@ namespace SocketServer
 
 public class Bot : Player
 {
+    public bool isDirty = false;
     private static int IDCounter = 0;
     protected int moveSpeedMax = 5;
     protected Simulation simulation;
@@ -207,6 +225,8 @@ public class RoamBot : Bot
                     sleepCycles = simulation.random.Next(1, 10) * 5; // 5 = cycles per second (simulation rate)
                 }
             }
+
+            isDirty = true;
         }
         else
         {
@@ -261,6 +281,8 @@ public class PatrolBot : Bot
         // if the target is close to the waypoint add the waypoint to the back of the queue
         if (Math.Abs(p.X - X) <= moveSpeedMax && Math.Abs(p.Y - Y) < moveSpeedMax)
             waypoints.Enqueue(waypoints.Dequeue());
+
+        isDirty = true;
     }
 }
 
@@ -306,6 +328,8 @@ public class AggroBot : RoamBot
                     // steps
                     X += (ushort)Math.Round(offsetX / steps);
                     Y += (ushort)Math.Round(offsetY / steps);
+
+                    isDirty = true;
                 }
             }
             else
