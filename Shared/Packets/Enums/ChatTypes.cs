@@ -1,6 +1,6 @@
 ﻿namespace Shared.Packets.Enums
 {
-    public enum ChatTypes
+    public enum ChatTypes : byte
     {
         Error,
         Whisper,

@@ -1,6 +1,6 @@
 ﻿namespace Shared.Packets.Enums
 {
-    public enum PacketType
+    public enum PacketType : byte
     {
         SV_REGISTER,
         SV_LOGIN,
