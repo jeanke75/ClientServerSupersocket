@@ -5,9 +5,11 @@ namespace SocketServer.Data.Hardcoded
 {
     public class HardcodedPlayerRepository : IPlayerRepository
     {
-        public HashSet<Player> GetAccounts()
+        private HashSet<Player> players;
+
+        public HardcodedPlayerRepository()
         {
-            return new HashSet<Player>()
+            players = new HashSet<Player>()
             {
                 new Player() { Username = "test", Password = "test", Email = "test", X = 800, Y = 800, MapName = "Town1" },
                 new Player() { Username = "test1", Password = "test", Email = "test", X = 1200, Y = 400, MapName = "Wild1" },
@@ -16,6 +18,11 @@ namespace SocketServer.Data.Hardcoded
                 new Player() { Username = "test4", Password = "test", Email = "test", X = 900, Y = 700, MapName = "Wild1" },
                 new Player() { Username = "test5", Password = "test", Email = "test", X = 100, Y = 100, MapName = "Wild2" }
             };
+        }
+
+        public HashSet<Player> GetAccounts()
+        {
+            return players;
         }
     }
 }

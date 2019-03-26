@@ -1,9 +1,8 @@
 ﻿using Shared;
 using Shared.Maps;
-using Shared.Models;
 using Shared.Packets.Server;
-using SocketServer;
 using SocketServer.Commands;
+using SocketServer.Model;
 using SocketServer.Servers.Custom;
 using System;
 using System.Collections.Concurrent;
@@ -11,7 +10,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 
 namespace SocketServer
 {
@@ -100,7 +98,7 @@ namespace SocketServer
 
                     foreach (Bot b in bots)
                     {
-                        b.DoMove();
+                        b.Update();
                         /*server.GetAllSessions().Where(x => x.player != null && x.player.MapName == b.MapName)
                                 .AsParallel().ForAll(x => { AddToQueue(x, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y }); });*/
                     }
@@ -123,13 +121,17 @@ namespace SocketServer
                 {
                     b.isDirty = false;
                 }*/
-                foreach (Bot b in bots.Where(x => x.isDirty))
+
+                if (sessions.Count() > 0)
                 {
-                    foreach (CustomSession s in sessions)
+                    foreach (Bot b in bots.Where(x => x.isDirty))
                     {
-                        AddToQueue(s, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y });
+                        foreach (CustomSession s in sessions)
+                        {
+                            AddToQueue(s, new svMove() { Success = true, Username = b.Username, MapName = b.MapName, X = b.X, Y = b.Y });
+                        }
+                        b.isDirty = false;
                     }
-                    b.isDirty = false;
                 }
 
                 //const double alpha = accumulator / dt;
@@ -153,204 +155,5 @@ namespace SocketServer
             queue.Enqueue(obj);
         }
         #endregion
-    }
-}
-
-public class Bot : Player
-{
-    public bool isDirty = false;
-    private static int IDCounter = 0;
-    protected int moveSpeedMax = 5;
-    protected Simulation simulation;
-
-    public Bot(Simulation sim, Point spawn)
-    {
-        Username = "Bot" + IDCounter;
-        IDCounter++;
-        simulation = sim;
-        MapName = sim.map.Name;
-        X = (ushort)spawn.X;
-        Y = (ushort)spawn.Y;
-    }
-
-    public virtual void DoMove()
-    {
-        // do nothing, dumb bot
-    }
-}
-
-public class RoamBot : Bot
-{
-    protected readonly ushort spawnX;
-    protected readonly ushort spawnY;
-    protected readonly ushort roamRange;
-    private Point waypoint;
-    private int sleepCycles = 0;
-
-    public RoamBot(Simulation sim, Point spawn) : this(sim, spawn, 0) { }
-
-    public RoamBot(Simulation sim, Point spawn, ushort roamRange) : base(sim, spawn)
-    {
-        spawnX = (ushort)spawn.X;
-        spawnY = (ushort)spawn.Y;
-        this.roamRange = roamRange;
-
-        ResetWaypoint();
-    }
-
-    public override void DoMove()
-    {
-        if (sleepCycles == 0)
-        {
-            // calculate the distance
-            int offsetX = (int)waypoint.X - X;
-            int offsetY = (int)waypoint.Y - Y;
-
-            // determine which distance is the furthest for the steps needed to reach the destination
-            double steps = Math.Abs(Math.Round((Math.Abs(offsetX) > Math.Abs(offsetY) ? offsetX / (float)moveSpeedMax : offsetY / (float)moveSpeedMax)));
-
-            // steps
-            X += (ushort)Math.Round(offsetX / steps);
-            Y += (ushort)Math.Round(offsetY / steps);
-
-            // check if the destination has been reached
-            if (Math.Abs(waypoint.X - X) <= moveSpeedMax && Math.Abs(waypoint.Y - Y) < moveSpeedMax)
-            {
-                // choose a new destination
-                ResetWaypoint();
-
-                // 75% chance to sleep for a period before moving again
-                if (simulation.random.Next(0, 100) < 75)
-                {
-                    sleepCycles = simulation.random.Next(1, 10) * 5; // 5 = cycles per second (simulation rate)
-                }
-            }
-
-            isDirty = true;
-        }
-        else
-        {
-            sleepCycles--;
-        }
-    }
-
-    private void ResetWaypoint()
-    {
-        int moveX = simulation.random.Next(-roamRange, roamRange + 1);
-        int moveY = simulation.random.Next(-roamRange, roamRange + 1);
-        int posX = X + moveX;
-        int posY = Y + moveY;
-        waypoint = new Point((ushort)ForceBounds(spawnX - roamRange, spawnX + roamRange, posX), (ushort)ForceBounds(spawnY - roamRange, spawnY + roamRange, posY));
-    }
-
-    private int ForceBounds(int lower, int upper, int current)
-    {
-        if (lower < 0) return 0;
-        if (current < lower) return lower;
-        if (upper > ushort.MaxValue) return ushort.MaxValue;
-        if (current > upper) return upper;
-        return current;
-    }
-}
-
-public class PatrolBot : Bot
-{
-    private Queue<Point> waypoints;
-
-    public PatrolBot(Simulation sim, Queue<Point> waypoints) : base(sim, waypoints.Peek())
-    {
-        waypoints.Enqueue(waypoints.Dequeue()); // put the first waypoint at the end because it's used as the initial spawn location
-        this.waypoints = waypoints;
-    }
-
-    public override void DoMove()
-    {
-        Point p = waypoints.Peek();
-
-        // calculate the distance
-        int offsetX = (int)p.X - X;
-        int offsetY = (int)p.Y - Y;
-
-        // determine which distance is the furthest for the steps needed to reach the destination
-        double steps = Math.Abs(Math.Round((Math.Abs(offsetX) > Math.Abs(offsetY) ? offsetX / (float)moveSpeedMax : offsetY / (float)moveSpeedMax)));
-
-        // steps
-        X += (ushort)Math.Round(offsetX / steps);
-        Y += (ushort)Math.Round(offsetY / steps);
-
-        // if the target is close to the waypoint add the waypoint to the back of the queue
-        if (Math.Abs(p.X - X) <= moveSpeedMax && Math.Abs(p.Y - Y) < moveSpeedMax)
-            waypoints.Enqueue(waypoints.Dequeue());
-
-        isDirty = true;
-    }
-}
-
-public class AggroBot : RoamBot
-{
-    private readonly ushort aggroRange;
-    private Player target;
-
-    public AggroBot(Simulation sim, Point spawn) : base(sim, spawn)
-    {
-        aggroRange = (ushort)(roamRange + 30);
-    }
-
-    public AggroBot(Simulation sim, Point spawn, ushort roamRange, ushort aggroRange) : base(sim, spawn, roamRange)
-    {
-        this.aggroRange = (aggroRange >= roamRange ? aggroRange : roamRange);
-    }
-
-    public override void DoMove()
-    {
-        // check if we have a target, otherwise try to find a new target
-        if (target == null)
-        {
-            target = simulation.server.GetAllSessions().FirstOrDefault(x => x.player != null && x.player.MapName == simulation.map.Name && IsTargetInAggroRange(x.player))?.player;
-        }
-
-        // if there is a target go to it, otherwise roam around
-        if (target != null)
-        {
-            // check if the target has not teleported and is still within aggro range
-            if (target.MapName == simulation.map.Name && IsTargetInAggroRange(target))
-            {
-                // check if target has been reached, if not move towards it otherwise do nothing
-                if (Math.Abs(target.X - X) >= moveSpeedMax || Math.Abs(target.Y - Y) >= moveSpeedMax)
-                {
-                    // calculate the distance
-                    int offsetX = target.X - X;
-                    int offsetY = target.Y - Y;
-
-                    // determine which distance is the furthest for the steps needed to reach the destination
-                    double steps = Math.Abs(Math.Round((Math.Abs(offsetX) > Math.Abs(offsetY) ? offsetX / (float)moveSpeedMax : offsetY / (float)moveSpeedMax)));
-
-                    // steps
-                    X += (ushort)Math.Round(offsetX / steps);
-                    Y += (ushort)Math.Round(offsetY / steps);
-
-                    isDirty = true;
-                }
-            }
-            else
-            {
-                // if the target can't be reached remove the target
-                target = null;
-            }
-        }
-        else
-        {
-            base.DoMove();
-        }
-    }
-
-    private bool IsTargetInAggroRange(Player p)
-    {
-        return IsValueInRange(p.X, spawnX - aggroRange, spawnX + aggroRange) && IsValueInRange(p.Y, spawnY - aggroRange, spawnY + aggroRange);
-    }
-
-    private bool IsValueInRange(int value, int min, int max)
-    {
-        return (value >= min && value <= max);
     }
 }

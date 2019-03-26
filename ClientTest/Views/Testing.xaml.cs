@@ -67,9 +67,9 @@ namespace ClientTest.Views
 
         private void LoadMaps()
         {
-            Maps.Add("Town1", new BaseMap() { Height = 1600, Width = 1600 });
-            Maps.Add("Wild1", new BaseMap() { Height = 800, Width = 2400 });
-            Maps.Add("Wild2", new BaseMap() { Height = 800, Width = 800 });
+            Maps.Add("Town1", new BaseMap( 1600, 1600 ));
+            Maps.Add("Wild1", new BaseMap( 800, 2400 ));
+            Maps.Add("Wild2", new BaseMap( 800, 800 ));
         }
 
         private void ShowCurrentMap()

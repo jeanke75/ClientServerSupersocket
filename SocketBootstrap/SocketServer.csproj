@@ -108,6 +108,8 @@
     <Compile Include="Data\Hardcoded\HardcodedPlayerRepository.cs" />
     <Compile Include="Data\IMapRepository.cs" />
     <Compile Include="Data\IPlayerRepository.cs" />
+    <Compile Include="Model\Bot.cs" />
+    <Compile Include="Model\BotMovement.cs" />
     <Compile Include="Servers\Custom\CustomDataRequest.cs" />
     <Compile Include="Servers\Custom\CustomReceiverFilter.cs" />
     <Compile Include="Servers\Custom\CustomServer.cs" />
