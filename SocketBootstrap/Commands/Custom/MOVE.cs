@@ -28,8 +28,8 @@ namespace SocketServer.Commands.Custom
             try
             {
                 cMove movec = MessageHelper.Deserialize(requestInfo.Message) as cMove;
-                
-                BaseMap map = new BaseMap();
+
+                BaseMap map = ((CustomServer)session.AppServer).mapRepo.GetMap(session.player.MapName);
                 if (movec.X > map.Width) movec.X = map.Width;
                 if (movec.Y > map.Height) movec.Y = map.Height;
 
