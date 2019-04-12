@@ -1,11 +1,11 @@
-﻿using System;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Client.Filters;
+﻿using Client.Filters;
 using Shared;
 using Shared.Packets.Server;
 using SuperSocket.ClientEngine;
+using System;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Client
 {
@@ -76,9 +76,9 @@ namespace Client
             SocketError?.Invoke(sender, e);
         }
 
-        public async Task Start()
+        public async Task<bool> Start()
         {
-            await client.ConnectAsync(Endpoint);
+            return await client.ConnectAsync(Endpoint);
         }
 
         public void Stop()

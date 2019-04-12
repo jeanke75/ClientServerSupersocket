@@ -6,7 +6,7 @@
         <Menu DockPanel.Dock="Top" Grid.ColumnSpan="2">
             <MenuItem Header="_Options">
                 <MenuItem Header="_Log">
-                    <MenuItem Name="mniLogStatus" Header="Show/Hide" Click="mniLogStatus_Click" />
+                    <MenuItem Name="mniLogStatus" Header="Show/Hide" Click="MenuLogStatus_Click" />
                     <Separator />
                     <MenuItem Name="mniLogSpawn" Header="Spawn" IsCheckable="True" IsChecked="True" />
                     <MenuItem Name="mniLogOtherPlayerDisconnect" Header="Other player disconnect" IsCheckable="True" IsChecked="True" />

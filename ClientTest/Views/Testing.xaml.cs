@@ -48,6 +48,8 @@ namespace ClientTest.Views
 
             ShowCurrentMap();
 
+            main.client.SocketClosed += Client_SocketClosed;
+
             main.client.MovementMessageReceived += HandleMovement;
             main.client.LogoutMessageReceived += HandleLogout;
 
@@ -56,6 +58,14 @@ namespace ClientTest.Views
 
             main.client.TeleportAckMessageReceived += HandleTeleportAck;
             main.client.TeleportMessageReceived += HandleTeleport;
+        }
+
+        private void Client_SocketClosed(object sender, EventArgs e)
+        {
+            Dispose();
+            Application.Current.Dispatcher.Invoke(delegate {
+                main.SetContent(new PickServer(main));
+            });
         }
 
         public void Dispose()
@@ -162,7 +172,7 @@ namespace ClientTest.Views
             Application.Current.Dispatcher.Invoke(delegate
             {
                 if (main.mniLogMessage.IsChecked)
-                    main.log.WriteLine("Chat message received");
+                    main.Log.WriteLine("Chat message received");
                 if (ChatQueue.Count() > 50) ChatQueue.Dequeue();
                 ChatQueue.Enqueue(chat);
             });
@@ -208,25 +218,25 @@ namespace ClientTest.Views
                         if (other != null) // known player
                         {
                             if (main.mniLogMovement.IsChecked)
-                                main.log.WriteLine(move.Username + " move (" + move.X + ", " + move.Y + ")");
+                                main.Log.WriteLine(move.Username + " move (" + move.X + ", " + move.Y + ")");
                             other.X = move.X;
                             other.Y = move.Y;
                         }
                         else // new player
                         {
                             if (main.mniLogSpawn.IsChecked)
-                                main.log.WriteLine(move.Username + " spawn (" + move.X + ", " + move.Y + ")");
+                                main.Log.WriteLine(move.Username + " spawn (" + move.X + ", " + move.Y + ")");
                             otherPlayers.Add(new Player() { Username = move.Username, X = move.X, Y = move.Y });
                         }
                     }
                 }
                 else if (move.ErrorMessage != null)
                 {
-                    main.log.WriteLine("Something went wrong during movement: " + move.ErrorMessage);
+                    main.Log.WriteLine("Something went wrong during movement: " + move.ErrorMessage);
                 }
                 else
                 {
-                    main.log.WriteLine("Invalid move! (cheating?!) Moved back to (" + move.X + ", " + move.Y + ")");
+                    main.Log.WriteLine("Invalid move! (cheating?!) Moved back to (" + move.X + ", " + move.Y + ")");
                     hero.X = move.X;
                     hero.Y = move.Y;
                 }
@@ -238,7 +248,7 @@ namespace ClientTest.Views
             Application.Current.Dispatcher.Invoke(delegate
             {
                 if (main.mniLogOtherPlayerDisconnect.IsChecked)
-                    main.log.WriteLine(logout.Username + " disconnected");
+                    main.Log.WriteLine(logout.Username + " disconnected");
                 otherPlayers.RemoveWhere(x => x.Username == logout.Username);
             });
         }
@@ -250,7 +260,7 @@ namespace ClientTest.Views
                 if (teleport.Success)
                 {
                     if (main.mniLogTeleport.IsChecked)
-                        main.log.WriteLine("Teleported to " + teleport.MapName + "(" + teleport.X + ", " + teleport.Y + ")");
+                        main.Log.WriteLine("Teleported to " + teleport.MapName + "(" + teleport.X + ", " + teleport.Y + ")");
                     hero.X = teleport.X;
                     hero.Y = teleport.Y;
                     if (teleport.MapName != hero.MapName)
@@ -267,7 +277,7 @@ namespace ClientTest.Views
                 else
                 {
                     if (main.mniLogTeleport.IsChecked)
-                        main.log.WriteLine("Teleport invalid");
+                        main.Log.WriteLine("Teleport invalid");
                     ChatQueue.Enqueue(new svChat() { Type = ChatTypes.Error, Message = "Invalid teleport parameters" });
                 }
             });
@@ -278,7 +288,7 @@ namespace ClientTest.Views
             Application.Current.Dispatcher.Invoke(delegate
             {
                 if (main.mniLogTeleport.IsChecked)
-                    main.log.WriteLine(teleport.Username + " teleported to " + teleport.MapName + "(" + teleport.X + ", " + teleport.Y + ")");
+                    main.Log.WriteLine(teleport.Username + " teleported to " + teleport.MapName + "(" + teleport.X + ", " + teleport.Y + ")");
 
                 if (teleport.Username != null)
                 {

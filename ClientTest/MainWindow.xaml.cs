@@ -13,13 +13,13 @@ namespace ClientTest
         public static bool ApplicationClosing { get; private set; } = false;
 
         public GameClient client;
-        public LogWindow log { get; private set; }
+        public LogWindow Log { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
             SetContent(new PickServer(this));
-            log = new LogWindow();
+            Log = new LogWindow();
         }
 
         public void SetContent(UserControl c)
@@ -29,21 +29,21 @@ namespace ClientTest
 
         private void Window_StateChanged(object sender, System.EventArgs e)
         {
-            if (log != null)
-                log.WindowState = WindowState;
+            if (Log != null)
+                Log.WindowState = WindowState;
         }
 
-        private void mniLogStatus_Click(object sender, RoutedEventArgs e)
+        private void MenuLogStatus_Click(object sender, RoutedEventArgs e)
         {
-            if (log != null)
+            if (Log != null)
             {
-                if (log.Visibility != Visibility.Visible)
+                if (Log.Visibility != Visibility.Visible)
                 {
-                    log.Show();
+                    Log.Show();
                 }
                 else
                 {
-                    log.Hide();
+                    Log.Hide();
                 }
             }
         }
@@ -52,8 +52,8 @@ namespace ClientTest
         {
             if (client != null && client.IsConnected)
                 client.Stop();
-            if (log != null)
-                log.ForceClose();
+            if (Log != null)
+                Log.ForceClose();
         }
     }
 }

@@ -59,8 +59,10 @@ namespace SocketServer
         {
             _IsRunning = true;
             timer.Start();
-            SimulationThread = new Thread(_SimulationThreadStart);
-            SimulationThread.IsBackground = true;
+            SimulationThread = new Thread(_SimulationThreadStart)
+            {
+                IsBackground = true
+            };
             SimulationThread.Start();
         }
 

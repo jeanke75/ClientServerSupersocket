@@ -16,6 +16,7 @@ namespace ClientTest.Views
         {
             InitializeComponent();
             this.main = main;
+            this.main.Title = "Connect to a server";
         }
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)

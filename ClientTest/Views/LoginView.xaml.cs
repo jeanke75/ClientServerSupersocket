@@ -16,6 +16,7 @@ namespace ClientTest.Views
         {
             InitializeComponent();
             this.main = main;
+            this.main.Title = $"Connected to {main.client.Endpoint.ToString()}";
             main.client.LoginMessageReceived += HandleLogin;
             main.client.RegisterMessageReceived += HandleRegister;
         }
